@@ -1,0 +1,7 @@
+{
+  "plugins": {
+    "autoprefixer": {
+      "browsers": ["IOS>=7", "Android>=4.1", "IE>=9"],
+    }
+  }
+}
