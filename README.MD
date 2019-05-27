@@ -163,6 +163,17 @@ module: {
   ]
 }
 ```
+### 12. 使用 CopyWebpackPlugin
+```
+// copy custom static assets
+new CopyWebpackPlugin([
+  {
+    from: path.resolve(__dirname, './static'),
+    to: 'static',
+    ignore: ['.*'],
+  },
+]),
+```
 
 ## 优化
 ### 1. 区分环境
