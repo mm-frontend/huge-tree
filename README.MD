@@ -72,7 +72,7 @@ $ yarn add less less-loader css-loader style-loader -D
 $ yarn add postcss-loader autoprefixer -D
 添加```.postcssrc``` 文件。
 
-### 6. 识别 .vue 文件
+### 7. 识别 .vue 文件
 $ yarn add vue-loader vue-template-compiler -D
 $ yarn add vue
 ```
@@ -81,4 +81,131 @@ resolve: {
       vue$: 'vue/dist/vue.runtime.esm.js'
     },
   },
+```
+### 8. 对文件使用 url-loader(基于file-loader + limit功能)
+$ yarn add url-loader -D
+```
+{
+  test: /\.(jpg|jpeg|gif|png|svg|webp)$/,
+  use: [
+    {
+      loader: 'url-loader',
+      options: {
+        limit: 8192,
+        name: 'assets/images/[hash:8].[ext]',
+      }
+    }
+  ]
+},
+{
+  test: /\.(woff|woff2|eot|ttf|otf)$/,
+  use: [
+    {
+      loader: 'url-loader',
+      options: {
+        name: 'assets/fonts/[hash:8].[ext]',
+      }
+    }
+  ]
+},
+```
+### 9. 接入 vue-router
+$ yarn add vue-router
+```
+// 添加别名
+resolve: {
+    alias: {
+      "@": path.resolve(__dirname, 'src')
+    },
+  },
+
+// 按需加载， 注意.babelrc中： "comments": false,会使 /* webpackChunkName: 'helloWorld' */ 失效
+const HelloWorld = () => import(/* webpackChunkName: 'helloWorld' */ '@/components/HelloWorld');
+```
+### 10. 使用 clean-webpack-plugin
+```
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+plugins: [
+  new CleanWebpackPlugin(), // 多版本共存模式时 必须要取消这个插件
+]
+```
+
+## 优化
+### 1. 区分环境
+$ yarn add cross-env -D
+```
+// package.json
+scripts: {
+  "build": "cross-env NODE_ENV=production webpack",
+}
+
+// 使用
+porcess.env.NODE_ENV
+```
+### 2. 使用mode
+```
+const mode = process.env.NODE_ENV || 'development'
+
+module.exports = {
+  mode: mode,
+}
+```
+### 3. 版本控制
+开发环境的 --hot 不能使用contenthash、chunkhash
+```
+const chunkhash = isDev ? '[name].[hash:8].js' : '[name].[chunkhash:8].js'
+const contenthash = isDev ? '[name].[hash:8].css' : '[name].[contenthash:8].css'
+
+output: {
+  path: path.resolve(__dirname, './dist'),
+  filename: chunkhash,
+  chunkFilename: chunkhash,
+  publicPath: '/',
+},
+```
+
+### 4. 生产环境抽离每一个 chunk 的 css 使用 MiniCssExtractPlugin
+```
+module: {
+  rules: [
+    {
+      test: /\.(css|less)$/,
+      use: {
+        loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader
+      },
+    }
+  ]
+}
+plugins: [
+  new MiniCssExtractPlugin({
+      filename: contenthash,
+      chunkFilename: contenthash,
+    }),
+]
+```
+### 5. 分离第三方插件，持久化缓存
+$ yarn add uglifyjs-webpack-plugin 
+```
+optimization: {
+  runtimeChunk: {
+    name: 'manifest',
+  },
+  splitChunks: {
+    cacheGroups: {
+      vendor: {
+        test: /[\\/]node_modules[\\/]/,
+        chunks: 'all',
+        name: 'vendor',
+      },
+    },
+  },
+  minimizer: [
+    new UglifyJsPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true,
+    }),
+    new OptimizeCSSAssetsPlugin(),
+  ],
+},
 ```

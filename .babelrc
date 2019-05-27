@@ -8,8 +8,8 @@
     ],
     "stage-2"
   ],
-  // 生成的文件中，不产生注释
-  "comments": false,
+  // 生成的文件中，不产生注释, 会使 /* webpackChunkName: 'helloWorld' */ 失效
+  // "comments": false,
   "plugins": [
     [
       "transform-runtime",
