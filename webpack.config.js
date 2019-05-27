@@ -1,30 +1,36 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-const isDev = process.env.NODE_ENV !== 'production'
-const chunkhash = isDev ? '[name].[hash:8].js' : '[name].[chunkhash:8].js'
-const contenthash = isDev ? '[name].[hash:8].css' : '[name].[contenthash:8].css'
-const mode = process.env.NODE_ENV || 'development'
+const isDev = process.env.NODE_ENV !== 'production';
+const chunkhash = isDev ? '[name].[hash:8].js' : '[name].[chunkhash:8].js';
+const contenthash = isDev ? '[name].[hash:8].css' : '[name].[contenthash:8].css';
+const mode = process.env.NODE_ENV || 'development';
 module.exports = {
   mode: mode,
   devtool: isDev ? 'source-map' : false,
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
   },
 
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: chunkhash,
     chunkFilename: chunkhash,
-    publicPath: './',
+    publicPath: isDev ? '/' : './',
   },
   module: {
     rules: [
+      {
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        exclude: /(node_modules|bower_components)/,
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
@@ -41,7 +47,7 @@ module.exports = {
         test: /\.(css|less)$/,
         use: [
           {
-            loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader
+            loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           },
           {
             loader: 'css-loader',
@@ -66,26 +72,26 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: path.resolve(__dirname, 'img/[name].[hash:7].[ext]')
-        }
+          name: path.resolve(__dirname, 'img/[name].[hash:7].[ext]'),
+        },
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: path.resolve(__dirname, 'media/[name].[hash:7].[ext]')
-        }
+          name: path.resolve(__dirname, 'media/[name].[hash:7].[ext]'),
+        },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: path.resolve(__dirname, 'fonts/[name].[hash:7].[ext]')
-        }
-      }
-    ]
+          name: path.resolve(__dirname, 'fonts/[name].[hash:7].[ext]'),
+        },
+      },
+    ],
   },
 
   plugins: [
@@ -102,7 +108,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.vue'],
     alias: {
       vue$: 'vue/dist/vue.runtime.esm.js',
-      "@": path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, 'src'),
     },
   },
 
@@ -136,8 +142,9 @@ module.exports = {
     port: 8000,
     disableHostCheck: true,
     hot: true,
-    proxy: {//配置跨域，访问的域名会被代理到本地的3000端口
-      '/api': 'http://localhost:3000'
-    }
-  }
-}
+    proxy: {
+      //配置跨域，访问的域名会被代理到本地的3000端口
+      '/api': 'http://localhost:3000',
+    },
+  },
+};

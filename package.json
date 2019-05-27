@@ -6,13 +6,16 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress",
     "build": "cross-env NODE_ENV=production webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "format": "prettier --write '{src,config,mock}/**/*.{js,json,vue,less}'"
   },
   "author": "lizhuang",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^9.5.1",
     "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^7.0.6",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
@@ -22,12 +25,26 @@
     "clean-webpack-plugin": "^2.0.2",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-loader": "^2.1.2",
+    "eslint-plugin-html": "^5.0.5",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^5.2.2",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^2.3.0",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
+    "lint-staged": "^8.1.7",
     "mini-css-extract-plugin": "^0.6.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "postcss-loader": "^3.0.0",
+    "prettier": "1.17.1",
     "style-loader": "^0.23.1",
     "thread-loader": "^2.1.2",
     "uglifyjs-webpack-plugin": "^2.1.3",
@@ -41,5 +58,16 @@
   "dependencies": {
     "vue": "^2.6.10",
     "vue-router": "^3.0.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md,vue}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

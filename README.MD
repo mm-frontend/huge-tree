@@ -129,6 +129,40 @@ plugins: [
   new CleanWebpackPlugin(), // 多版本共存模式时 必须要取消这个插件
 ]
 ```
+### 11. 加入eslint + pritter + pre commit hook 约束代码提交
+$ yarn add babel-eslint eslint eslint-config-standard eslint-plugin-html eslint-plugin-promise eslint-plugin-standard eslint-plugin-import eslint-plugin-node -D
+$ yarn add eslint-loader -D
+$ yarn add prettier -D --exact
+$ yarn add eslint-plugin-prettier eslint-config-prettier eslint-plugin-vue -D
+// lint-staged、 husky插件，这样再每次 commit 代码的时候都会格式化一下。
+$ yarn add lint-staged husky@next -D
+```
+// 添加 .eslintrc.js
+// 添加.prettierrc
+
+// package.json
+// pre-commit 约束代码提交
+"husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+"lint-staged": {
+    "*.{js,json,css,md,vue}": ["prettier --write", "git add"]
+  }
+
+// webpack.config.js
+module: {
+  rules: [
+     {
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        exclude: /(node_modules|bower_components)/,
+      },
+  ]
+}
+```
 
 ## 优化
 ### 1. 区分环境
