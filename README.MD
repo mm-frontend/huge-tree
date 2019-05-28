@@ -254,7 +254,20 @@ optimization: {
   ],
 },
 ```
-### 3. 优化构建速度
+### 6. 使用可视化分析 BundleAnalyzerPlugin
+```
+// package.json
+scripts: {
+  "analyz": "NODE_ENV=production npm_config_report=true npm run build"
+}
+
+// webpack.config.json
+plugins: [
+  ...(process.env.npm_config_report ? [new BundleAnalyzerPlugin()] : []),
+]
+```
+
+## 3. 优化构建速度
 ### 1. 缩小文件搜素范围
 ### 2. 生成动态链接库 使用DllPlugin（将第三方插件只编译一次）
 ### 3. 利用 CUP 多核， 使用 HappyPack 加快 loader 转换

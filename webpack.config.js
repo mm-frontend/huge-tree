@@ -8,6 +8,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 // 优化
 const HappyPack = require('happypack');
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 // 共享进程池， 以防止资源占用过多
 const happyThreadPool = HappyPack.ThreadPool({ size: 5 });
 
@@ -96,6 +98,7 @@ module.exports = {
 
   plugins: [
     ...(isDev ? [] : [new CleanWebpackPlugin()]), // 多版本共存模式时 必须要取消这个插件
+    ...(process.env.npm_config_report ? [new BundleAnalyzerPlugin()] : []),
     new HtmlWebpackPlugin({ template: path.resolve(__dirname, './index.html') }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({

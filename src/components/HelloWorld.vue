@@ -64,6 +64,14 @@ export default {
       msg: 'Welcome to Your Vue.js App',
     };
   },
+  mounted() {
+    this.init();
+  },
+  methods: {
+    init() {
+      console.log('fdsa');
+    },
+  },
 };
 </script>
 
