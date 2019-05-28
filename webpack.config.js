@@ -7,6 +7,10 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const HappyPack = require('happypack');
+// 共享进程池， 以防止资源占用过多
+const happyThreadPool = HappyPack.ThreadPool({ size: 5 });
+
 const isDev = process.env.NODE_ENV !== 'production';
 const chunkhash = isDev ? '[name].[hash:8].js' : '[name].[chunkhash:8].js';
 const contenthash = isDev ? '[name].[hash:8].css' : '[name].[contenthash:8].css';
@@ -28,45 +32,37 @@ module.exports = {
     rules: [
       {
         test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
         enforce: 'pre',
+        use: ['happypack/loader?id=eslint'],
         exclude: /(node_modules|bower_components)/,
       },
       {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              cacheDirectory: true,
-            },
-          },
-        ],
+        use: ['happypack/loader?id=babel'],
       },
       {
         test: /\.(css|less)$/,
         use: [
           {
+            // happpack 不支持 MiniCssExtractPlugin.loader
             loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           },
-          {
-            loader: 'css-loader',
-          },
-          {
-            loader: 'postcss-loader',
-            options: { sourceMap: true },
-          },
-          {
-            loader: 'less-loader',
-            options: { sourceMap: true },
-          },
+          'happypack/loader?id=style',
         ],
       },
       {
         test: /\.vue$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'vue-loader',
+        use: {
+          loader: 'vue-loader',
+          options: {
+            loaders: {
+              // happy 不支持 vue-loader， 将js 交由 happypack
+              js: 'happypack/loader?id=babel',
+            },
+          },
+        },
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -75,6 +71,7 @@ module.exports = {
           limit: 10000,
           name: path.resolve(__dirname, 'img/[name].[hash:7].[ext]'),
         },
+        exclude: /(node_modules|bower_components)/,
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -83,20 +80,22 @@ module.exports = {
           limit: 10000,
           name: path.resolve(__dirname, 'media/[name].[hash:7].[ext]'),
         },
+        exclude: /(node_modules|bower_components)/,
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: path.resolve(__dirname, 'fonts/[name].[hash:7].[ext]'),
+          name: path.resolve(__dirname, 'font/[name].[hash:7].[ext]'),
         },
+        exclude: /(node_modules|bower_components)/,
       },
     ],
   },
 
   plugins: [
-    new CleanWebpackPlugin(), // 多版本共存模式时 必须要取消这个插件
+    ...(isDev ? [] : [new CleanWebpackPlugin()]), // 多版本共存模式时 必须要取消这个插件
     new HtmlWebpackPlugin({ template: path.resolve(__dirname, './index.html') }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
@@ -111,6 +110,7 @@ module.exports = {
         ignore: ['.*'],
       },
     ]),
+    ...happypack(),
   ],
 
   resolve: {
@@ -157,3 +157,44 @@ module.exports = {
     },
   },
 };
+
+function happypack() {
+  return [
+    new HappyPack({
+      id: 'eslint',
+      loaders: ['eslint-loader'],
+      threadPool: happyThreadPool,
+    }),
+
+    new HappyPack({
+      id: 'babel',
+      loaders: [
+        {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          },
+        },
+      ],
+      threadPool: happyThreadPool,
+    }),
+
+    new HappyPack({
+      id: 'style',
+      loaders: [
+        {
+          loader: 'css-loader',
+        },
+        {
+          loader: 'postcss-loader',
+          options: { sourceMap: true },
+        },
+        {
+          loader: 'less-loader',
+          options: { sourceMap: true },
+        },
+      ],
+      threadPool: happyThreadPool,
+    }),
+  ];
+}

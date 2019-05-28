@@ -254,3 +254,14 @@ optimization: {
   ],
 },
 ```
+### 3. 优化构建速度
+### 1. 缩小文件搜素范围
+### 2. 生成动态链接库 使用DllPlugin（将第三方插件只编译一次）
+### 3. 利用 CUP 多核， 使用 HappyPack 加快 loader 转换
+> webpack 构建流程中最耗时的就是 Loader 转换，js 单线程只能对文件一个一个的处理，HappyPack 原理就是将这部分任务，分解到多个进程，减少构建时间。
+
+> 大中型项目中，使用 happypack 才能看到比较明显的构建速度提升。
+```
+// 见 git 记录
+```
+### 4. 利用 CUP 多核， 使用 ParalleUglifyPlugin 加快 UglifyJS 的压缩。
