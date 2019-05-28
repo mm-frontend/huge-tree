@@ -262,6 +262,23 @@ optimization: {
 
 > 大中型项目中，使用 happypack 才能看到比较明显的构建速度提升。
 ```
-// 见 git 记录
+// 见 git 记录"使用happypack"
 ```
 ### 4. 利用 CUP 多核， 使用 ParalleUglifyPlugin 加快 UglifyJS 的压缩。
+```
+new ParallelUglifyPlugin({
+        uglifyJS: {
+          output: {
+            // 最紧凑输出
+            beautify: false,
+            // 删除所有注释
+            comments: false,
+          },
+          compress: {
+            drop_console: !isDev,
+            collapse_vars: true,
+            reduce_vars: true,
+          },
+        },
+      }),
+```

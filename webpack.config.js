@@ -3,11 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
+// 优化
 const HappyPack = require('happypack');
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 // 共享进程池， 以防止资源占用过多
 const happyThreadPool = HappyPack.ThreadPool({ size: 5 });
 
@@ -135,10 +135,20 @@ module.exports = {
       },
     },
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true,
+      new ParallelUglifyPlugin({
+        uglifyJS: {
+          output: {
+            // 最紧凑输出
+            beautify: false,
+            // 删除所有注释
+            comments: false,
+          },
+          compress: {
+            drop_console: !isDev,
+            collapse_vars: true,
+            reduce_vars: true,
+          },
+        },
       }),
       new OptimizeCSSAssetsPlugin(),
     ],
