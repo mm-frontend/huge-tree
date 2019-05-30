@@ -1,17 +1,29 @@
-## 手写我的 VUE-CLI
-先 clone 一份 vue-cli 作为参考。
+> webpack学习的大致过程在此记录一下。<br>
+
+先创建一份 vue-cli 作为参考。[https://cli.vuejs.org/zh/guide/installation.html](https://cli.vuejs.org/zh/guide/installation.html)
+```
+$ yarn global add @vue/cli
+$ vue -V // 查看版本
+$ vue init webpack vue-cli
+```
+然后创建 my-vue-cli 初始化项目结构，添加.gitignore等。
+```
+$ npm init
+$ git init
+```
 ### 1. 初始化webpack
+[https://webpack.docschina.org/guides/installation/](https://webpack.docschina.org/guides/installation/)
 ```
 // webpack 4.x+
 $ yarn add webpack webapck-cli -D
 ```
 ### 2. 添加项目结构
-入口文件：src/main.js
-html模版文件：index.html
-webpack配置文件： webpack.config.js
+- 入口文件：src/main.js, 在main.js中随便写点js。
+- html模版文件：index.html
+- webpack配置文件： webpack.config.js
 ### 3. webpack 基础配置
-```$ yarn build```, 会生成dist/app.**.js, 在浏览器 Console 中运行试试。
 ```
+// webpack.config.js
 const path = require('path')
 
 module.exports = {
@@ -20,13 +32,26 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: '[name].[contenthash:8].js'
+    filename: '[name].[hash:8].js'
   }
 }
 ```
+```
+// package.json
+{
+    "scripts": {
+        "build": "webpack",
+    }
+}
+```
+```$ yarn build```, 会生成dist/app.\*\*.js, 将app.**.js在浏览器 console 中运行试试。(webpack 命令会自动查找 webapck.config.js 并执行)。
+
 ### 4. 使用devServer, HtmlWebpackPlugin
+[webpack-dev-server](https://webpack.docschina.org/configuration/dev-server/) 
+```
 $ yarn add webpack-dev-server -D
 $ yarn add html-webpack-plugin -D
+```
 ```
   plugins: [
     new HtmlWebpackPlugin({ template: path.resolve(__dirname, './index.html') })
@@ -45,36 +70,97 @@ $ yarn add html-webpack-plugin -D
   }
 ```
 ### 5. 转译ES6、ES7 使用 babel-loader
+[https://webpack.docschina.org/loaders/babel-loader/](https://webpack.docschina.org/loaders/babel-loader/)<br>
 // 注意 babel-loader@7 与 babel-core@6 配套使用；babel-loader@8 与 babel-core@7 配套使用。
+```
 $ yarn add babel-loader babel-core babel-preset-env babel-preset-stage-2 -D
 $ yarn add babel-plugin-transform-runtime babel-runtime -D
+```
 添加 ```.babelrc``` 文件
 ```
-module: {
-  rules: [
-    {
-      test: /\.(js|jsx)$/,
-      exclude: /(node_modules|bower_components)/,
-      use: [
-        {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
-        },
+{
+  // presets 告诉 babel 源码使用了哪些新的语法特性。
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ],
+    "stage-2"
+  ],
+  // 生成的文件中，不产生注释, 会使 /* webpackChunkName: 'helloWorld' */ 失效
+  // "comments": false,
+  "plugins": [
+    [
+      // babel-plugin-transform-runtime 减少冗余代码，依赖 babel-runtime
+      "transform-runtime",
+      {
+        "helpers": true,
+        "polyfill": true,
+        "regenerator": true,
+        "moduleName": "babel-runtime"
+      }
+    ]
+  ],
+  "env": {
+    // 测试环境，test 是提前设置的环境变量，如果没有设置BABEL_ENV, 则使用NODE_ENV，如果都没有设置默认就是development
+    "test": {
+      "presets": [
+        "env",
+        "stage-2"
       ],
-    },
-  ]
+      // instanbul是一个用来测试转码后代码的工具
+      "plugins": [
+        "istanbul"
+      ]
+    }
+  }
+}
+```
+```
+// webpack.config.js
+module.exports = {
+    module: {
+        rules: [
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /(node_modules|bower_components)/,
+                loaders: [
+                    {
+                      loader: 'babel-loader',
+                      options: {
+                        cacheDirectory: true,
+                      },
+                    },
+                  ],
+            },
+        ]
+    }
 }
 ```
 ### 6. 接入less、postcss
+```
 $ yarn add less less-loader css-loader style-loader -D
 $ yarn add postcss-loader autoprefixer -D
+```
 添加```.postcssrc``` 文件。
+```
+{
+  "plugins": {
+    "autoprefixer": {
+      "browsers": ["IOS>=7", "Android>=4.1", "IE>=9"],
+    }
+  }
+}
+
+```
 
 ### 7. 识别 .vue 文件
+```
 $ yarn add vue-loader vue-template-compiler -D
 $ yarn add vue
+```
 ```
 resolve: {
     alias: {
@@ -130,12 +216,14 @@ plugins: [
 ]
 ```
 ### 11. 加入eslint + pritter + pre commit hook 约束代码提交
+```
 $ yarn add babel-eslint eslint eslint-config-standard eslint-plugin-html eslint-plugin-promise eslint-plugin-standard eslint-plugin-import eslint-plugin-node -D
 $ yarn add eslint-loader -D
 $ yarn add prettier -D --exact
 $ yarn add eslint-plugin-prettier eslint-config-prettier eslint-plugin-vue -D
 // lint-staged、 husky插件，这样再每次 commit 代码的时候都会格式化一下。
 $ yarn add lint-staged husky@next -D
+```
 ```
 // 添加 .eslintrc.js
 // 添加.prettierrc
@@ -177,6 +265,7 @@ new CopyWebpackPlugin([
 
 ## 优化
 ### 1. 区分环境
+不同环境，使用不同配置插件等。
 $ yarn add cross-env -D
 ```
 // package.json
@@ -188,6 +277,8 @@ scripts: {
 porcess.env.NODE_ENV
 ```
 ### 2. 使用mode
+[https://webpack.docschina.org/concepts/mode/](https://webpack.docschina.org/concepts/mode/)
+webpack4+ mode简化了许多配置。
 ```
 const mode = process.env.NODE_ENV || 'development'
 
@@ -195,7 +286,7 @@ module.exports = {
   mode: mode,
 }
 ```
-### 3. 版本控制
+### 3. 输出文件版本控制
 开发环境的 --hot 不能使用contenthash、chunkhash
 ```
 const chunkhash = isDev ? '[name].[hash:8].js' : '[name].[chunkhash:8].js'
@@ -229,6 +320,7 @@ plugins: [
 ]
 ```
 ### 5. 分离第三方插件，持久化缓存
+[https://webpack.docschina.org/configuration/optimization/](https://webpack.docschina.org/configuration/optimization/)
 $ yarn add uglifyjs-webpack-plugin 
 ```
 optimization: {
@@ -295,3 +387,70 @@ new ParallelUglifyPlugin({
         },
       }),
 ```
+
+## 4. 编写 Loader
+[https://webpack.docschina.org/contribute/writing-a-loader/](https://webpack.docschina.org/contribute/writing-a-loader/)
+```
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        exclude: /(node_modules|bower_components)/,
+        use: [
+          {
+            loader: 'vue-loader',
+            options: {
+              loaders: {
+                // happy 不支持 vue-loader， 将js 交由 happypack
+                js: 'happypack/loader?id=babel',
+              },
+            },
+          },
+          {
+            // 为每个 vue 文件 添加 ~@/assets/less/variable.less, 避免人工每次导入。
+            loader: 'less-auto-import-loader',
+            options: {
+              url: '~@/assets/less/variable.less',
+            },
+          },
+        ],
+      },
+    ]
+  }
+  resolveLoader: {
+    // 增加 loader 的查找范围
+    modules: ['node_modules', './loaders/'],
+  },
+}
+
+```
+## 5. 编写 Plugin
+
+***重点是***找到合适的事件点去完成功能。[compiler 钩子](https://webpack.docschina.org/api/compiler-hooks/)
+```
+// EndWebpackPlugin webpack构建成功或失败后执行回调
+class EndWebpackPlugin {
+  constructor(doneCallback, failCallback) {
+    this.doneCallback = doneCallback
+    this.failCallback = failCallback
+  }
+  apply(compiler) {
+    compiler.plugin('done', (stats) => {
+      this.doneCallback(stats)
+    })
+    compiler.plugin('failed', (err) => {
+      this.doneCallback(err)
+    })
+  }
+}
+
+// webpack.config.js
+const EndWebpackPlugin = require('end-webpack-plugin');
+plugins: [
+  new EndWebpackPlugin((stats) => {}, (err) => {})
+]
+```
+github: [https://github.com/lizhuang93/my-vue-cli](https://github.com/lizhuang93/my-vue-cli)<br>
+webpack官网: [https://webpack.docschina.org/concepts/](https://webpack.docschina.org/concepts/)
