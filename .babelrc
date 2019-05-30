@@ -1,4 +1,5 @@
 {
+  // presets 告诉 babel 源码使用了哪些新的语法特性。
   "presets": [
     [
       "env",
@@ -12,6 +13,7 @@
   // "comments": false,
   "plugins": [
     [
+      // babel-plugin-transform-runtime 减少冗余代码，依赖 babel-runtime
       "transform-runtime",
       {
         "helpers": true,

@@ -17,6 +17,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 const chunkhash = isDev ? '[name].[hash:8].js' : '[name].[chunkhash:8].js';
 const contenthash = isDev ? '[name].[hash:8].css' : '[name].[contenthash:8].css';
 const mode = process.env.NODE_ENV || 'development';
+
 module.exports = {
   mode: mode,
   devtool: isDev ? 'source-map' : false,
@@ -56,15 +57,23 @@ module.exports = {
       {
         test: /\.vue$/,
         exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            loaders: {
-              // happy 不支持 vue-loader， 将js 交由 happypack
-              js: 'happypack/loader?id=babel',
+        use: [
+          {
+            loader: 'vue-loader',
+            options: {
+              loaders: {
+                // happy 不支持 vue-loader， 将js 交由 happypack
+                js: 'happypack/loader?id=babel',
+              },
             },
           },
-        },
+          {
+            loader: 'less-auto-import-loader',
+            options: {
+              url: '~@/assets/less/variable.less',
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -122,6 +131,10 @@ module.exports = {
       vue$: 'vue/dist/vue.runtime.esm.js',
       '@': path.resolve(__dirname, 'src'),
     },
+  },
+
+  resolveLoader: {
+    modules: ['node_modules', './loaders/'],
   },
 
   optimization: {
