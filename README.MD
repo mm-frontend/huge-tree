@@ -388,7 +388,25 @@ new ParallelUglifyPlugin({
       }),
 ```
 
-## 4. 编写 Loader
+## 4. webpack 构建流程
+1. 初始化：启动构建，读取合并配置参数，加载 Plugin，实例化 Compiler。
+```
+after-plugins: 调用完所有插件的 apply 方法。
+```
+2. 编译：从入口出发递归的编译 Module。
+```
+run: 启动一次新的编译。
+compile: 告诉插件一次新的编译即将启动，会带上compiler对象
+compilation: Compilation 对象包含了当前的模块资源、文件等。
+after-compilation: compilation 完成。
+```
+3. 输出：将 Module 合并为 Chunk，输出到文件系统
+```
+emit: 文件输出，可以在这里获取和修改输出内容。
+done: 成功的完成一次完整的编译和输出过程。
+```
+
+## 5. 编写 Loader
 [https://webpack.docschina.org/contribute/writing-a-loader/](https://webpack.docschina.org/contribute/writing-a-loader/)
 ```
 // webpack.config.js
@@ -426,7 +444,7 @@ module.exports = {
 }
 
 ```
-## 5. 编写 Plugin
+## 6. 编写 Plugin
 
 ***重点是***找到合适的事件点去完成功能。[compiler 钩子](https://webpack.docschina.org/api/compiler-hooks/)
 ```
