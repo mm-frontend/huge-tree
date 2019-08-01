@@ -1,6 +1,6 @@
 <template>
   <div class="coordiante">
-    <section class="container">
+    <section class="container" @click.self="detailInfo = {}">
       <ul>
         <template v-for="(item, index) in myList">
           <li :key="index" :style="`transform: translateX(${getOffsetLeft(item.start)}px)`">
@@ -17,6 +17,13 @@
           </li>
         </template>
       </ul>
+    </section>
+
+    <section :class="['detail-info', detailInfo.colorClass]" v-if="detailInfo && Object.keys(detailInfo).length > 0">
+      <div>
+        <p>维修时间 {{ detailInfo.start }}</p>
+        <p>质保期 {{ detailInfo.time }}</p>
+      </div>
     </section>
   </div>
 </template>
@@ -115,11 +122,8 @@ export default {
     // 将时间戳转化为要显示的刻度
     showLabel(item) {
       let label = '';
-      const date = new Date(item);
+      const date = new Date(item * 1000);
       switch (this.type) {
-        case 'month':
-          label = date.getMonth() + 1;
-          break;
         case 'date':
           label = `${date.getMonth() + 1}.${date.getDate()}`;
           break;
@@ -127,7 +131,7 @@ export default {
           label = '待开发';
           break;
         default:
-          label = 'type为未知类型';
+          label = item;
           break;
       }
       return label;
@@ -175,9 +179,8 @@ export default {
       }
       return className;
     },
-    showDetail(item, e) {
+    showDetail(item) {
       this.detailInfo = item;
-      console.log(item, e);
     },
   },
 };
@@ -187,6 +190,7 @@ export default {
 .coordiante {
   width: 660px;
   margin: 0 auto;
+  position: relative;
   ul {
     position: relative;
     padding: 0;
@@ -210,6 +214,27 @@ export default {
       align-items: flex-end;
     }
   }
+  .detail-info {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    text-align: left;
+    border: 1px solid #4186fb;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(33, 33, 40, 0.25);
+    &.yellow {
+      border-color: #ffbb3e;
+    }
+    &.red {
+      border-color: #fe6764;
+    }
+    p {
+      margin: 0;
+    }
+  }
+
   .hidden {
     visibility: hidden;
   }

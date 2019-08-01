@@ -1,8 +1,8 @@
 <template>
   <div class="triangle">
     <div :class="['wrap', colorClass]" :style="`width:${width}px;height:${height}px;`">
-      <section class="reac-wrap">
-        <div class="reac" :style="getStyle()" @click="$emit('t-click', $event)"></div>
+      <section class="reac-wrap" @click.self="$emit('t-click', {})">
+        <div class="reac" :style="getStyle()" @click="$emit('t-click', { ...$attrs, ...$props })"></div>
       </section>
       <div class="v-line"></div>
     </div>

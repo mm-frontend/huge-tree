@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <coordinate v-if="runData.length > 0" :min="min" :max="max" :list="runData" :type="type"></coordinate>
+    <coordinate v-if="runData.length > 0" :min="min" :max="max" :list="runData" :type="type"> </coordinate>
   </div>
 </template>
 
