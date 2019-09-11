@@ -148,13 +148,22 @@ export default {
       let arr = [];
       for (let i = 1; i < _list.length; i++) {
         if (_list[i - 1].start + _list[i - 1].time > _list[i].start) {
+          // 前一个的尾大于后一个的头(保证有交叉)
+          let end = _list[i - 1].start + _list[i - 1].time;
+          let start = _list[i].start;
+          let time = end - start;
+          let height = (time / _list[i - 1].time) * 72;
+          if (_list[i - 1].start + _list[i - 1].time > _list[i].start + _list[i].time) {
+            // 前一个的尾甚至大于了后一个的尾
+            end = _list[i].start + _list[i].time;
+          }
           let obj = {
-            start: _list[i].start,
-            end: _list[i - 1].start + _list[i - 1].time,
-            time: _list[i - 1].start + _list[i - 1].time - _list[i].start,
+            start: start,
+            end: end,
+            time: end - start,
+            height: height,
             type: -1,
           };
-          obj.height = (obj.time / _list[i - 1].time) * 72;
           arr.push(obj);
         }
       }
