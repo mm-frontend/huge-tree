@@ -12,14 +12,9 @@ files.forEach(f => {
   childRoutes.push(...newRoutes);
 });
 
-const about = ctx => {
-  ctx.response.type = 'html';
-  ctx.response.body = '<a href="/">Index Page</a>';
-};
-
 const main = ctx => {
   ctx.response.body = 'Hello World';
 };
-const arr = [route.get('/', main), route.get('/about', about), ...childRoutes];
+const arr = [route.get('/', main), ...childRoutes];
 
 module.exports = arr;

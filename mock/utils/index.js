@@ -2,7 +2,7 @@ const mkdirp = require('mkdirp');
 const fs = require('fs');
 
 /**
- * 创建文件夹
+ * 创建文件夹，存在直接返回path，不存在则创建
  * @param {文件夹路径} path
  * @returns path
  */

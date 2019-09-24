@@ -11,7 +11,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/demo/nav',
+      redirect: '/demo',
     },
     {
       path: '/demo',
