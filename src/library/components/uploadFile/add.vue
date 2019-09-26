@@ -1,7 +1,12 @@
 <template>
   <div class="ex-uploader">
     <!-- 添加 -->
-    <section class="add">
+    <section
+      :class="['add', { hover: isHover }]"
+      @drop="onDrop"
+      @dragenter="isHover = true"
+      @dragleave="isHover = false"
+    >
       <input type="file" class="file" :multiple="multiple" @input="onAdd" />
       <div class="add-symbol">
         <i>+</i>
@@ -48,7 +53,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      isHover: false,
+    };
   },
 
   computed: {
@@ -60,7 +67,18 @@ export default {
   mounted() {},
 
   methods: {
-    async onAdd(e) {
+    onDrop(e) {
+      this.isHover = false;
+      const files = e.dataTransfer.files;
+      const e1 = {
+        target: {
+          files: files,
+        },
+      };
+      this.onAdd(e1);
+      e.preventDefault();
+    },
+    onAdd(e) {
       const files = [...e.target.files];
       this.$emit('onAdd', files);
       files.forEach(file => {
@@ -100,7 +118,8 @@ export default {
     height: 100px;
     background: #efefef;
     border: 1px dashed #cccccc;
-    &:hover {
+    &:hover,
+    &.hover {
       border-color: #409eff;
       color: #409eff;
     }
