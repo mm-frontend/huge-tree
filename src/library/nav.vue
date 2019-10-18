@@ -23,6 +23,10 @@ export default {
           path: '/demo/uploadFile',
           text: '上传图片',
         },
+        {
+          path: '/demo/tooltip',
+          text: '纯css Tooltip',
+        },
       ],
     };
   },
