@@ -27,6 +27,10 @@ export default {
           path: '/demo/tooltip',
           text: '纯css Tooltip',
         },
+        {
+          path: '/demo/runSegment',
+          text: '运行时段',
+        },
       ],
     };
   },

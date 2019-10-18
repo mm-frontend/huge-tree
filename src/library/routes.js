@@ -2,6 +2,7 @@ const Nav = () => import(/* webpackChunkName: 'demo' */ './nav');
 const TriangleCoordinates = () => import(/* webpackChunkName: 'demo' */ './components/triangleCoordinates/demo');
 const UploadFile = () => import(/* webpackChunkName: 'demo' */ './components/uploadFile/demo');
 const Tooltip = () => import(/* webpackChunkName: 'demo' */ './components/tooltip/demo');
+const RunSegment = () => import(/* webpackChunkName: 'demo' */ './components/runSegment/demo');
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
     path: 'tooltip',
     name: 'tooltip',
     component: Tooltip,
+  },
+  {
+    path: 'runSegment',
+    name: 'runSegment',
+    component: RunSegment,
   },
 ];
 
