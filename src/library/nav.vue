@@ -31,6 +31,10 @@ export default {
           path: '/demo/runSegment',
           text: '运行时段',
         },
+        {
+          path: '/demo/hugeTree',
+          text: 'tree组件(海量数据)',
+        },
       ],
     };
   },

@@ -1,4 +1,4 @@
-<template>
+<template funtional>
   <div>
     <button tooltip="这是啥啥啥报告的啥结果" title="这是啥啥啥报告的啥结果">结果查看</button><br />
     <br />

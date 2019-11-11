@@ -3,6 +3,7 @@ const TriangleCoordinates = () => import(/* webpackChunkName: 'demo' */ './compo
 const UploadFile = () => import(/* webpackChunkName: 'demo' */ './components/uploadFile/demo');
 const Tooltip = () => import(/* webpackChunkName: 'demo' */ './components/tooltip/demo');
 const RunSegment = () => import(/* webpackChunkName: 'demo' */ './components/runSegment/demo');
+const HugeTree = () => import(/* webpackChunkName: 'demo' */ './components/hugeTree/demo');
 
 const routes = [
   {
@@ -29,6 +30,11 @@ const routes = [
     path: 'runSegment',
     name: 'runSegment',
     component: RunSegment,
+  },
+  {
+    path: 'hugeTree',
+    name: 'hugeTree',
+    component: HugeTree,
   },
 ];
 
