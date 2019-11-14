@@ -1,15 +1,25 @@
 <template>
   <div class="huge-demo">
-    huge-tree
-    <div class="tree-wrap">
-      <huge-tree v-model="checkedList" :list="list" expandLevel="2" :height="600" @onChange="onChange"></huge-tree>
+    huge-tree<br /><br />
+    <button @click="onClick('JSON10W')">点击我，展示tree（模拟接口返回数据，十万条）</button><br /><br />
+    <button @click="onClick('JSON2W')">点击我，展示tree（模拟接口返回数据，两万条）</button>
+    <div class="tree-wrap" v-show="isShowTree">
+      <huge-tree
+        v-model="checkedList"
+        :list="list"
+        expandLevel="all"
+        :isLoading="isLoading"
+        :height="600"
+        @onChange="onChange"
+      ></huge-tree>
     </div>
   </div>
 </template>
 
 <script>
 import HugeTree from '../index.vue';
-import JSON from './count-100001.json';
+import JSON10W from './count-100001.json';
+import JSON2W from './count-20001.json';
 
 export default {
   components: {
@@ -18,8 +28,12 @@ export default {
   props: {},
   data() {
     return {
-      checkedList: [],
-      list: JSON,
+      JSON10W,
+      JSON2W,
+      checkedList: ['1-2', '1-3'],
+      list: [],
+      isLoading: true,
+      isShowTree: false,
       // list: [
       //    {
       //       checked: false,
@@ -41,6 +55,16 @@ export default {
   mounted() {},
 
   methods: {
+    onClick(key) {
+      this.isShowTree = true;
+      setTimeout(() => {
+        this.list = this[key];
+        this.isLoading = false;
+      }, 3000);
+      setTimeout(() => {
+        this.checkedList.push('1-5');
+      }, 5000);
+    },
     onChange(nodeList) {
       console.log(nodeList);
     },
@@ -50,7 +74,10 @@ export default {
 
 <style scoped lang="less" style="text/less">
 .huge-demo {
+  text-align: left;
   .tree-wrap {
+    .filter-input {
+    }
   }
 }
 </style>

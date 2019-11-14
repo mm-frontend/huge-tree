@@ -1,6 +1,6 @@
 <template>
   <div class="check-box">
-    <div class="label">
+    <div class="label" @click="onLabelClick">
       <slot />
     </div>
     <div :class="['box', { 'is-checked': checked }, { 'is-part-checked': indeterminate }]" @click="onClick"></div>
@@ -36,6 +36,9 @@ export default {
     onClick() {
       this.$emit('change', !this.checked);
       this.$emit('on-change');
+    },
+    onLabelClick() {
+      this.$emit('on-label-click');
     },
   },
 };
