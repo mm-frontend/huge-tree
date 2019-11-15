@@ -1,9 +1,17 @@
 <template>
   <div class="huge-demo">
-    huge-tree<br /><br />
-    <button @click="onClick('JSON10W')">点击我，展示tree（模拟接口返回数据，十万条）</button><br /><br />
-    <button @click="onClick('JSON2W')">点击我，展示tree（模拟接口返回数据，两万条）</button>
-    <div class="tree-wrap" v-show="isShowTree">
+    <div class="btn-bar">
+      huge-tree<br />
+      点击按钮，展示tree<br />
+      <button @click="btnClick('count-501')">500条</button>
+      <button @click="btnClick('count-20001')">2w 条</button>
+      <button @click="btnClick('count-50001')">5w 条</button>
+      <button @click="btnClick('count-100001')">10w 条</button>
+      <button @click="btnClick('count-200001')">20w 条</button>
+      <button @click="onReload">刷新</button>
+    </div>
+
+    <div class="tree-wrap" v-show="isShowDialog">
       <huge-tree
         v-model="checkedList"
         :list="list"
@@ -13,27 +21,26 @@
         @onChange="onChange"
       ></huge-tree>
     </div>
+    <read-me class="mark-down"></read-me>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import HugeTree from '../index.vue';
-import JSON10W from './count-100001.json';
-import JSON2W from './count-20001.json';
-
+import ReadMe from './readme.md';
 export default {
   components: {
     HugeTree,
+    ReadMe,
   },
   props: {},
   data() {
     return {
-      JSON10W,
-      JSON2W,
       checkedList: ['1-2', '1-3'],
-      list: [],
       isLoading: true,
-      isShowTree: false,
+      isShowDialog: false,
+      list: [],
       // list: [
       //    {
       //       checked: false,
@@ -55,18 +62,18 @@ export default {
   mounted() {},
 
   methods: {
-    onClick(key) {
-      this.isShowTree = true;
-      setTimeout(() => {
-        this.list = this[key];
+    btnClick(count) {
+      this.isShowDialog = true;
+      axios.get(`/static/json/${count}.json`).then(({ data }) => {
+        this.list = data;
         this.isLoading = false;
-      }, 3000);
-      setTimeout(() => {
-        this.checkedList.push('1-5');
-      }, 5000);
+      });
     },
     onChange(nodeList) {
       console.log(nodeList);
+    },
+    onReload() {
+      window.location.reload();
     },
   },
 };
@@ -75,6 +82,19 @@ export default {
 <style scoped lang="less" style="text/less">
 .huge-demo {
   text-align: left;
+  .btn-bar {
+    padding: 20px;
+    button {
+      cursor: pointer;
+      padding: 5px 10px;
+      color: #ffffff;
+      background-color: #409eff;
+      border-radius: 4px;
+      &:hover {
+        background-color: #228af1;
+      }
+    }
+  }
   .tree-wrap {
     .filter-input {
     }

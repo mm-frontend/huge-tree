@@ -54,7 +54,7 @@ export default {
   },
   props: {
     // 含有过滤输入框
-    hasInput: { type: Boolean, default: true },
+    hasInput: { type: Boolean, default: false },
     // 缩进
     indent: { type: [String, Number], default: 15 },
     // 展开 level，  all: 展开全部； 1: 只展示第一层(最外层)；2: 展示到第二层；、、、
@@ -326,14 +326,14 @@ export default {
           &::before {
             content: '+';
             position: absolute;
+            top: -1px;
             left: 0;
             transform: scale(0.8);
           }
           &.is-expand::before {
             content: '-';
             top: -1px;
-            left: 2px;
-            transform: scale(1.2);
+            left: 0px;
           }
         }
         .label {

@@ -70,7 +70,7 @@ export default {
     // 子元素部分选中
     &.is-part-checked::after {
       content: '-';
-      left: 2px;
+      left: 0px;
       top: -7px;
     }
     &.is-checked,
@@ -78,7 +78,7 @@ export default {
       border-color: #409eff;
       color: #409eff;
       &::after {
-        transform: scale(1);
+        transform: scale(0.9);
       }
     }
   }
