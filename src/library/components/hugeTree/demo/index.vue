@@ -13,13 +13,19 @@
 
     <div class="tree-wrap" v-show="isShowDialog">
       <huge-tree
-        v-model="checkedList"
-        :list="list"
+        ref="huge-tree"
+        hasInput
+        checkedAction="dblclick"
         expandLevel="all"
         :isLoading="isLoading"
         :height="600"
+        v-model="checkedList"
+        :list="list"
         @onChange="onChange"
-      ></huge-tree>
+        @onClickLabel="onClickLabel"
+      >
+        <span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
+      </huge-tree>
     </div>
     <read-me class="mark-down"></read-me>
   </div>
@@ -37,7 +43,7 @@ export default {
   props: {},
   data() {
     return {
-      checkedList: ['1-2', '1-3'],
+      checkedList: [],
       isLoading: true,
       isShowDialog: false,
       list: [],
@@ -46,12 +52,14 @@ export default {
       //       checked: false,
       //       id: 1,
       //       indeterminate: false, // 节点的子树中是否是部分选中
-      //       label: '节点'
-      //       parentId: 0,
-      //       isLeaf: false,
+      //       label: '节点text'
+      //       parentId: 0, // 父节点 id
+      //       isLeaf: false, // 叶子节点
       //       path: [0, 1], // 节点位置
-      //       isExpand: false,
-      //       hidden: false,
+      //       isExpand: false, // 展开
+      //       hidden: false, // 隐藏
+      //       disabled: false, // 禁用
+      //       childrenCount: 100,  // 子、孙元素的数量
       //     }
       // ],
     };
@@ -67,10 +75,14 @@ export default {
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
         this.list = data;
         this.isLoading = false;
+        this.$refs['huge-tree'].setCheckedNodes([{ id: '1-3' }, { id: '1-5' }]);
       });
     },
     onChange(nodeList) {
-      console.log(nodeList);
+      console.log('onChange', nodeList);
+    },
+    onClickLabel(node) {
+      console.log('onClickLabel', node);
     },
     onReload() {
       window.location.reload();
@@ -96,8 +108,6 @@ export default {
     }
   }
   .tree-wrap {
-    .filter-input {
-    }
   }
 }
 </style>

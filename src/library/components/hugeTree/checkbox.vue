@@ -1,9 +1,12 @@
 <template>
-  <div class="check-box">
-    <div class="label" @click="onLabelClick">
+  <div :class="['check-box']">
+    <div @click="onSingleChecked" @dblclick="onDBLChecked">
       <slot />
     </div>
-    <div :class="['box', { 'is-checked': checked }, { 'is-part-checked': indeterminate }]" @click="onClick"></div>
+    <div
+      :class="['box', { 'is-checked': checked, 'is-part-checked': indeterminate, 'is-disabled': disabled }]"
+      @click="onChecked"
+    ></div>
   </div>
 </template>
 
@@ -11,7 +14,7 @@
 export default {
   model: {
     prop: 'checked',
-    event: 'change',
+    event: 'checked-change',
   },
   components: {},
   props: {
@@ -23,6 +26,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    checkedAction: {
+      type: String,
+      default: 'none',
+    },
   },
   data() {
     return {};
@@ -33,12 +44,20 @@ export default {
   mounted() {},
 
   methods: {
-    onClick() {
-      this.$emit('change', !this.checked);
+    onChecked() {
+      this.$emit('checked-change', !this.checked);
       this.$emit('on-change');
     },
-    onLabelClick() {
-      this.$emit('on-label-click');
+    labelClick() {
+      this.$emit('on-click-label');
+    },
+    onSingleChecked() {
+      if (this.checkedAction === 'click') this.onChecked();
+      this.labelClick();
+    },
+    onDBLChecked() {
+      if (this.checkedAction === 'dblclick') this.onChecked();
+      this.labelClick();
     },
   },
 };
@@ -65,7 +84,6 @@ export default {
       left: 0px;
       top: -5px;
       transform: scale(0);
-      transition: transform 0.2s ease-in-out;
     }
     // 子元素部分选中
     &.is-part-checked::after {
@@ -79,6 +97,14 @@ export default {
       color: #409eff;
       &::after {
         transform: scale(0.9);
+      }
+    }
+    &.is-disabled {
+      background: #f2f6fc;
+      color: #c0c4cc;
+      border-color: #c0c4cc;
+      &::after {
+        cursor: not-allowed;
       }
     }
   }
