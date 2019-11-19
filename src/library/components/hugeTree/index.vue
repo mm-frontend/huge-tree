@@ -36,7 +36,7 @@
           >
             <div class="label">
               <slot :slot-scope="item">{{ item.label }}</slot>
-              <i v-if="!item.isLeaf" class="count">({{ getPosterityList(item, filterList).length }})</i>
+              <i v-if="!item.isLeaf" class="count">({{ getPosterityList(item, filterList, true).length }})</i>
             </div>
           </dt-checkbox>
         </section>

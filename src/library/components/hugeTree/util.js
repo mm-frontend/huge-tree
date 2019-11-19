@@ -40,7 +40,14 @@ export function isIncludesKeyword(node, keyword, list) {
  * 获取子、孙后代 list
  * @param {String | Number} id 父节点
  * @param {Array} list 节点
+ * @param {Boolean} leafOnly 只统计叶子节点,
+ * @returns Array
  */
-export function getPosterityList(node, list) {
-  return list.filter(i => isPosterity(node.path, i));
+export function getPosterityList(node, list, leafOnly = false) {
+  return list.filter(i => {
+    if (leafOnly) {
+      return i.isLeaf && isPosterity(node.path, i);
+    }
+    return isPosterity(node.path, i);
+  });
 }
