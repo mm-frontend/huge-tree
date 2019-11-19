@@ -3,11 +3,19 @@
     <div class="btn-bar">
       huge-tree<br />
       点击按钮，展示tree<br />
+      <!-- 扁平化的list
       <button @click="btnClick('count-501')">500条</button>
       <button @click="btnClick('count-20001')">2w 条</button>
       <button @click="btnClick('count-50001')">5w 条</button>
       <button @click="btnClick('count-100001')">10w 条</button>
-      <button @click="btnClick('count-200001')">20w 条</button>
+      <button @click="btnClick('count-200001')">20w 条</button><br /> -->
+      tree型结构
+      <button @click="btnClick('tree-500')">500条</button>
+      <button @click="btnClick('tree-10000')">1w 条</button>
+      <button @click="btnClick('tree-20000')">2w 条</button>
+      <button @click="btnClick('tree-50000')">5w 条</button>
+      <button @click="btnClick('tree-100000')">10w 条</button>
+      <button @click="btnClick('tree-200000')">20w 条</button><br />
       <button @click="onReload">刷新</button>
     </div>
 
@@ -20,8 +28,7 @@
         :isLoading="isLoading"
         :showCheckbox="true"
         :height="600"
-        v-model="checkedList"
-        :list="list"
+        :data="data"
         @onChange="onChange"
         @onClickLabel="onClickLabel"
       >
@@ -47,8 +54,8 @@ export default {
       checkedList: [],
       isLoading: true,
       isShowDialog: false,
-      list: [],
-      // list: [
+      data: [],
+      // data: [
       //    {
       //       checked: false,
       //       id: 1,
@@ -74,13 +81,13 @@ export default {
     btnClick(count) {
       this.isShowDialog = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
-        this.list = data;
+        this.data = data;
         this.isLoading = false;
         this.$refs['huge-tree'].setCheckedNodes([{ id: '1-3' }, { id: '1-5' }]);
       });
     },
-    onChange(nodeList) {
-      console.log('onChange', nodeList);
+    onChange({ checkedKeys, checkedNodes }) {
+      console.log('onChange', checkedKeys, checkedNodes);
     },
     onClickLabel(node) {
       console.log('onClickLabel', node);

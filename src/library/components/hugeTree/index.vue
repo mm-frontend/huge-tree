@@ -36,7 +36,8 @@
           >
             <div class="label">
               <slot :slot-scope="item">{{ item.label }}</slot>
-              <i v-if="!item.isLeaf" class="count">({{ getPosterityList(item, filterList, true).length }})</i>
+              <!-- getLeafCount 第三个参数为true, 表示为仅获取叶子节点 -->
+              <i v-if="!item.isLeaf" class="count">({{ item.leafCount }})</i>
             </div>
           </dt-checkbox>
         </section>
@@ -51,12 +52,18 @@
 <script>
 import Checkbox from './checkbox.vue';
 import { throttle } from '../../utils/index.js';
-import { isPosterity, isSelf, isIncludesKeyword, getPosterityList } from './util.js';
+import {
+  isPosterity,
+  isSelf,
+  isIncludesKeyword,
+  getLeafCount,
+  depthFirstEach,
+  listToTree,
+  findSubTree,
+  breadthFirstEach,
+  findNode,
+} from './util.js';
 export default {
-  model: {
-    prop: 'checkedList',
-    event: 'list-change',
-  },
   components: {
     'dt-checkbox': Checkbox,
   },
@@ -69,10 +76,8 @@ export default {
     expandLevel: { type: [String, Number], default: 'all' },
     // 容器高度
     height: { type: [String, Number], default: 600 },
-    // 选中的数据
-    checkedList: { type: Array, default: () => [] },
     // 海量数据
-    list: { type: Array, default: () => [] },
+    data: { type: Array, default: () => [] },
     // 输入框 placeholder
     placeholder: { type: String, default: '请输入关键字进行查找' },
     // isLoading
@@ -86,10 +91,12 @@ export default {
   },
   data() {
     return {
-      getPosterityList, // 获取子孙元素的个数
+      getLeafCount, // 获取子孙元素list
       keyword: '', // 关键词
       isSearching: false, // 搜索中
+      list: [], // 扁平化的tree
       filterList: [], // 根据关键词过滤后的list
+      filterTree: [], // 根据关键词过滤后的tree
       disabledList: [], // disabled 为true组成的数组
       itemHeigth: 27, // 每一项的高度
       startIndex: 0, // 渲染的开始区间
@@ -114,8 +121,8 @@ export default {
     },
   },
   watch: {
-    list(newVal, oldVal) {
-      if (newVal.length > 0) {
+    data(newVal, oldVal) {
+      if (newVal !== oldVal && newVal.length > 0) {
         this.init();
       }
     },
@@ -126,14 +133,23 @@ export default {
 
   methods: {
     init() {
-      console.log('init');
-      this.initFilterList();
+      if (this.data.length === 0) return;
+      this.list = [];
+      this.flatTree(this.data);
+      console.log('init', this.list);
+      this.initFilter();
       this.initExpand();
       this.setCheckedKeys();
       this.throttleSrcoll = throttle(this.setRenderList, 80);
       this.backToTop();
     },
 
+    // 拉平 tree
+    flatTree(data) {
+      depthFirstEach({ tree: data, init: true }, node => {
+        this.list.push(node);
+      });
+    },
     // 初始化处理展开逻辑
     initExpand() {
       if (/^\d+$/.test(this.expandLevel)) {
@@ -165,19 +181,17 @@ export default {
         console.warn('The argument to function setCheckedKeys must be an array');
         return;
       }
-      const list = keys.length > 0 ? keys : this.checkedList;
-      if (list.length > 0) {
-        this.$nextTick(() => {
-          list.forEach(id => {
-            const node = this.filterList.find(j => j.id === id);
-            if (node && node.isLeaf) {
-              node.checked = true;
-              this.handleCheckedChange(node);
-            }
-          });
-          this.emitChecked();
+      if (keys.length === 0) return;
+      this.$nextTick(() => {
+        keys.forEach(id => {
+          const node = this.filterList.find(j => j.id === id);
+          if (node && node.isLeaf) {
+            node.checked = true;
+            this.handleCheckedChange(node);
+          }
         });
-      }
+        this.emitChecked();
+      });
     },
 
     // 回显选中状态
@@ -205,7 +219,6 @@ export default {
     onExpand(node) {
       node.isExpand = !node.isExpand;
       this.showOrHiddenChildren(node, !node.isExpand);
-      node.isHidden = false;
     },
 
     // 点击checkbox
@@ -218,13 +231,12 @@ export default {
     emitChecked() {
       this.checkedNodes = this.list.filter(i => i.checked || i.indeterminate); // 返回”所有“选中的节点 或者 父节点(子节点部分选中)
       this.checkedKeys = this.checkedNodes.map(i => i.id);
-      this.$emit('list-change', this.checkedKeys);
-      this.$emit('onChange', this.checkedNodes);
+      this.$emit('onChange', { checkedKeys: this.checkedKeys, checkedNodes: this.checkedNodes });
     },
     // 处理选中逻辑
     handleCheckedChange(node) {
       if (node.checked) node.indeterminate = false;
-      this.doChildrenChecked(node.path, node.checked);
+      this.doChildrenChecked(node);
       this.doParentChecked(node.parentId);
       this.disabledList.forEach(node => {
         this.doParentChecked(node.parentId);
@@ -235,14 +247,12 @@ export default {
     showOrHiddenChildren(node, isHidden) {
       if (node.isLeaf) return;
       if (isHidden) {
-        const posterityList = getPosterityList(node, this.filterList);
-        posterityList.forEach(i => {
-          i.isHidden = isHidden;
-          i.isExpand = false;
+        depthFirstEach({ tree: node.children }, node => {
+          node.isHidden = isHidden;
+          node.isExpand = false;
         });
       } else {
-        const allDirectChildren = this.filterList.filter(i => i.parentId === node.id);
-        allDirectChildren.forEach(j => {
+        node.children.forEach(j => {
           j.isHidden = isHidden;
           j.isExpand = false;
         });
@@ -250,26 +260,32 @@ export default {
     },
 
     // 处理子、孙后代
-    doChildrenChecked(basePath, checked) {
-      this.filterList.forEach(node => {
-        if (node.disabled) return;
-        const isMatch = isPosterity(basePath, node) || isSelf(basePath, node);
-        if (isMatch) {
-          node.checked = checked;
-        }
+    doChildrenChecked(node) {
+      if (!node.children) return;
+      const checked = node.checked;
+      depthFirstEach({ tree: node.children }, i => {
+        i.indeterminate = false;
+        i.checked = checked;
       });
     },
 
     // 处理自己及祖先
     doParentChecked(parentId) {
       if (parentId === null) return;
-      const allDirectChildren = this.filterList.filter(i => i.parentId === parentId);
-      const parentNode = this.filterList.find(i => i.id === parentId);
+      const allDirectChildren = findSubTree(this.filterTree, parentId);
+      const parentNode = findNode(this.filterTree, parentId);
       const childrenAllChecked = allDirectChildren.every(i => i.checked);
       this.checkParentIndeterminate(parentNode, allDirectChildren);
       parentNode.checked = childrenAllChecked;
       if (childrenAllChecked) parentNode.indeterminate = false;
       if (parentNode.parentId !== null) this.doParentChecked(parentNode.parentId);
+      // const allDirectChildren = this.filterList.filter(i => i.parentId === parentId);
+      // const parentNode = this.filterList.find(i => i.id === parentId);
+      // const childrenAllChecked = allDirectChildren.every(i => i.checked);
+      // this.checkParentIndeterminate(parentNode, allDirectChildren);
+      // parentNode.checked = childrenAllChecked;
+      // if (childrenAllChecked) parentNode.indeterminate = false;
+      // if (parentNode.parentId !== null) this.doParentChecked(parentNode.parentId);
     },
 
     // 子元素部分选中，核对祖先是否部分选中
@@ -299,14 +315,29 @@ export default {
     },
 
     // 筛选节点
-    initFilterList() {
+    initFilter() {
+      // set filterList
       if (this.keyword.trim() === '') {
         this.filterList = this.list;
+        this.filterTree = this.data;
       } else {
         this.filterList = this.list.filter(i => {
           return isIncludesKeyword(i, this.keyword, this.list);
         });
+        // 清除每个 节点的 children信息
+        this.filterList.forEach(node => {
+          if (node.children && node.children.length > 0) {
+            node.children = [];
+          }
+        });
+        // 过滤后的tree  同时也将children挂载到了this.filterList的节点
+        this.filterTree = listToTree(this.filterList);
       }
+      breadthFirstEach({ tree: this.filterTree }, node => {
+        if (!node.isLeaf) {
+          node.leafCount = getLeafCount(this.filterTree, node);
+        }
+      });
       this.disabledList = this.filterList.filter(i => i.disabled);
     },
 
