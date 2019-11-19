@@ -18,6 +18,7 @@
         checkedAction="dblclick"
         expandLevel="all"
         :isLoading="isLoading"
+        :showCheckbox="true"
         :height="600"
         v-model="checkedList"
         :list="list"
@@ -51,15 +52,15 @@ export default {
       //    {
       //       checked: false,
       //       id: 1,
-      //       indeterminate: false, // 节点的子树中是否是部分选中
+      //       indeterminate: false, // 节点的子树中是否是部分选中， 代码生成
       //       label: '节点text'
       //       parentId: 0, // 父节点 id
       //       isLeaf: false, // 叶子节点
       //       path: [0, 1], // 节点位置
-      //       isExpand: false, // 展开
-      //       hidden: false, // 隐藏
-      //       disabled: false, // 禁用
-      //       childrenCount: 100,  // 子、孙元素的数量
+      //       isExpand: false, // 展开， 代码生成
+      //       hidden: false, // 隐藏， 代码生成
+      //       disabled: false, // 禁用， 可选
+      //       childrenCount: 100,  // 子、孙元素的数量，代码计算
       //     }
       // ],
     };

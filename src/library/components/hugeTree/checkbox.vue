@@ -4,6 +4,7 @@
       <slot />
     </div>
     <div
+      v-if="showCheckbox"
       :class="['box', { 'is-checked': checked, 'is-part-checked': indeterminate, 'is-disabled': disabled }]"
       @click="onChecked"
     ></div>
@@ -34,6 +35,10 @@ export default {
       type: String,
       default: 'none',
     },
+    showCheckbox: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {};
@@ -46,17 +51,17 @@ export default {
   methods: {
     onChecked() {
       this.$emit('checked-change', !this.checked);
-      this.$emit('on-change');
+      this.$emit('on-checked');
     },
     labelClick() {
       this.$emit('on-click-label');
     },
     onSingleChecked() {
-      if (this.checkedAction === 'click') this.onChecked();
+      if (this.checkedAction === 'click' && this.showCheckbox) this.onChecked();
       this.labelClick();
     },
     onDBLChecked() {
-      if (this.checkedAction === 'dblclick') this.onChecked();
+      if (this.checkedAction === 'dblclick' && this.showCheckbox) this.onChecked();
       this.labelClick();
     },
   },

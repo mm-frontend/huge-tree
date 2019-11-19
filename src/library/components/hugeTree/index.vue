@@ -29,8 +29,9 @@
             :indeterminate="item.indeterminate"
             :disabled="item.disabled"
             :checkedAction="checkedAction"
+            :showCheckbox="showCheckbox"
             :class="{ 'is-disabled': item.disabled }"
-            @on-change="onChange(item, index)"
+            @on-checked="onChecked(item, index)"
             @on-click-label="$emit('onClickLabel', item)"
           >
             <div class="label">
@@ -43,7 +44,7 @@
     </section>
     <section v-else class="no-data">
       <p v-if="isLoading || isSearching">loading...</p>
-      <p v-else>暂无数据</p>
+      <p v-else>{{ emptyText }}</p>
     </section>
   </div>
 </template>
@@ -78,6 +79,10 @@ export default {
     isLoading: { type: Boolean, default: false },
     // 在 label 上选中动作， 点击label选中 --> none: 不选中；click: 单击； dblclick: 双击；
     checkedAction: { type: String, default: 'none' },
+    // 内容为空展示的文本
+    emptyText: { type: String, default: '暂无数据' },
+    // 是否展示checkbox
+    showCheckbox: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -135,14 +140,23 @@ export default {
         this.filterList.forEach(node => {
           this.$set(node, 'isExpand', Boolean(node.path.length < this.expandLevel));
           this.$set(node, 'isHidden', Boolean(node.path.length > this.expandLevel));
+          this.initNode(node);
         });
-        return;
+      } else {
+        // 展开全部
+        this.filterList.forEach(node => {
+          this.$set(node, 'isExpand', true);
+          this.$set(node, 'isHidden', false);
+          this.initNode(node);
+        });
       }
-      // 展开全部
-      this.filterList.forEach(node => {
-        this.$set(node, 'isExpand', true);
-        this.$set(node, 'isHidden', false);
-      });
+    },
+
+    // 初始化节点所需要的字段
+    initNode(node) {
+      this.$set(node, 'checked', node.checked, false);
+      this.$set(node, 'indeterminate', false);
+      this.$set(node, 'disabled', node.disabled || false);
     },
 
     // 回显选中状态
@@ -158,9 +172,10 @@ export default {
             const node = this.filterList.find(j => j.id === id);
             if (node && node.isLeaf) {
               node.checked = true;
-              this.onChange(node);
+              this.handleCheckedChange(node);
             }
           });
+          this.emitChecked();
         });
       }
     },
@@ -194,22 +209,26 @@ export default {
     },
 
     // 点击checkbox
-    onChange(node) {
+    onChecked(node) {
       this.handleCheckedChange(node);
-      this.disabledList.forEach(node => {
-        this.doParentChecked(node.parentId);
-      });
+      this.emitChecked();
+    },
+
+    // 发送给父组件选中信息
+    emitChecked() {
       this.checkedNodes = this.list.filter(i => i.checked || i.indeterminate); // 返回”所有“选中的节点 或者 父节点(子节点部分选中)
       this.checkedKeys = this.checkedNodes.map(i => i.id);
       this.$emit('list-change', this.checkedKeys);
       this.$emit('onChange', this.checkedNodes);
     },
-
     // 处理选中逻辑
     handleCheckedChange(node) {
       if (node.checked) node.indeterminate = false;
       this.doChildrenChecked(node.path, node.checked);
       this.doParentChecked(node.parentId);
+      this.disabledList.forEach(node => {
+        this.doParentChecked(node.parentId);
+      });
     },
 
     // 1. 隐藏： 子孙后代都要隐藏， 2. 展开：仅儿子展开, value
