@@ -5,39 +5,24 @@
   id: 0,
   label: '全部',
   parentId: null, // 根节点的 parentId 必须为 null
-  isLeaf: false, // 是否是叶子节点
-  path: [0], // 节点路径
-  checked: false,  // 可选
   disabled: false, // 可选
-  childrenCount: 2， // 可选
+  children: [
+    {
+      id: 1,
+      label: '全部',
+      parentId: null, // 根节点的 parentId 必须为 null
+      disabled: null, // 可选
+      children: null
+    }
+  ]
 },
-{
-  id: 1,
-  label: '位置1',
-  parentId: 0, // 根节点的 parentId 必须为 null
-  isLeaf: false, // 是否是叶子节点
-  path: [0, 1], // 节点路径
-  checked: false,  // 可选
-  disabled: false, // 可选
-  childrenCount: 1， // 可选
-},
-{
-  id: 2,
-  label: '叶子节点1',
-  parentId: 1, // 根节点的 parentId 必须为 null
-  isLeaf: true, // 是否是叶子节点
-  path: [0, 1, 2], // 节点路径
-  checked: false,  // 可选
-  disabled: false, // 可选
-  childrenCount: 0， // 可选
-}
 ```
 
 ## Attributes
 
 | 参数          | 说明                                         | 类型           | 可选值                                                  | 默认值               |
 | ------------- | -------------------------------------------- | -------------- | ------------------------------------------------------- | -------------------- |
-| list          | 扁平化的 tree                                | Array          | --                                                      | []                   |
+| data          | tree                                         | Array          | --                                                      | []                   |
 | hasInput      | 是否含有过滤输入框                           | Boolean        | --                                                      | false                |
 | placeholder   | 过滤输入框的 placeholder，配合 hasInput 使用 | String         | --                                                      | 请输入关键字进行查找 |
 | indent        | 缩进                                         | String, Number | --                                                      | 15                   |
