@@ -1,22 +1,4 @@
 /**
- * 判断子节点是否是父节点的后代，排除了自身。
- * @param {Array} basePath 父节点的path
- * @param {Object}} node 子节点
- */
-export function isPosterity(basePath, node) {
-  if (String(basePath) === String(node.path)) return false;
-  let isMatch = true;
-  basePath.forEach((id, index) => {
-    if (id !== node.path[index]) isMatch = false;
-  });
-  return isMatch;
-}
-
-export function isSelf(basePath, node) {
-  return String(basePath) === String(node.path);
-}
-
-/**
  * 自己 || 子 || 孙 是否含有关键字
  * @param {Object} node 当前节点
  * @param {String} keyword
@@ -83,27 +65,45 @@ export function listToTree(filterList) {
     return;
   }
   if (!filterList || filterList.length === 0) return [];
-  let root = [];
-  console.time();
+  let root = {
+    // 0: {
+    //   id: 0,
+    //   lalbel: '333',
+    //   childrenMap: {
+    //     1: {id: 1},
+    //     2: {}
+    //   }
+    // },
+  };
   filterList.forEach(node => {
-    const parentNode = findParentNodeByPath(filterList, node.path);
-    if (parentNode) {
-      parentNode.children.push(node);
-    } else {
-      root.push(node);
-    }
+    node.childrenMap = {};
+    const parentNode = (root, path) => {
+      const _path = path.slice();
+      const rootId = _path.shift();
+      if (_path.length > 1) {
+        return parentNode(root[rootId].childrenMap, _path);
+      }
+      if (_path.length === 1) {
+        return root[rootId].childrenMap;
+      }
+      return root;
+    };
+
+    parentNode(root, node.path)[node.id] = node;
   });
-  console.timeEnd();
-  return root;
+  const setChildren = root => {
+    const nodes = Object.values(root);
+    for (let node of nodes) {
+      node.children = Object.values(node.childrenMap);
+      if (node.children && node.children.length > 0) {
+        setChildren(node.childrenMap);
+      }
+    }
+  };
+  setChildren(root);
+  return Object.values(root);
 }
 
-function findParentNodeByPath(list, path) {
-  const node = list.find(node => {
-    const parentPath = node.path;
-    return path.length - parentPath.length === 1 && String(path).includes(parentPath);
-  });
-  return node;
-}
 /**
  * 广度优先遍历算法，
  * @param {Object} {tree, limitDeep: 限制遍历的深度， deep: 当前深度}

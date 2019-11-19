@@ -53,8 +53,6 @@
 import Checkbox from './checkbox.vue';
 import { throttle } from '../../utils/index.js';
 import {
-  isPosterity,
-  isSelf,
   isIncludesKeyword,
   getLeafCount,
   depthFirstEach,
@@ -134,12 +132,11 @@ export default {
   methods: {
     init() {
       if (this.data.length === 0) return;
-      this.list = [];
-      this.flatTree(this.data);
-      console.log('init', this.list);
+      if (this.list.length === 0) this.flatTree(JSON.parse(JSON.stringify(this.data)));
+      console.log('init');
       this.initFilter();
       this.initExpand();
-      this.setCheckedKeys();
+      this.setCheckedKeys(this.checkedKeys);
       this.throttleSrcoll = throttle(this.setRenderList, 80);
       this.backToTop();
     },
@@ -171,7 +168,7 @@ export default {
     // 初始化节点所需要的字段
     initNode(node) {
       this.$set(node, 'checked', node.checked, false);
-      this.$set(node, 'indeterminate', false);
+      this.$set(node, 'indeterminate', node.indeterminate || false);
       this.$set(node, 'disabled', node.disabled || false);
     },
 
@@ -182,6 +179,7 @@ export default {
         return;
       }
       if (keys.length === 0) return;
+      console.time();
       this.$nextTick(() => {
         keys.forEach(id => {
           const node = this.filterList.find(j => j.id === id);
@@ -190,6 +188,7 @@ export default {
             this.handleCheckedChange(node);
           }
         });
+        console.timeEnd();
         this.emitChecked();
       });
     },
@@ -308,9 +307,9 @@ export default {
 
     // 设置可见区域的 list
     setRenderList(scrollTop = this.$refs['content-wrap'].scrollTop) {
-      const count = Math.ceil(this.$el.clientHeight / this.itemHeigth) + 40; // 可见项数
+      const count = Math.ceil(this.$el.clientHeight / this.itemHeigth) + 60; // 可见项数
       const startIndex = Math.floor(scrollTop / this.itemHeigth);
-      this.startIndex = startIndex > 20 ? startIndex - 20 : startIndex;
+      this.startIndex = startIndex > 30 ? startIndex - 30 : 0;
       this.endIndex = this.startIndex + count;
     },
 
@@ -319,20 +318,13 @@ export default {
       // set filterList
       if (this.keyword.trim() === '') {
         this.filterList = this.list;
-        this.filterTree = this.data;
       } else {
         this.filterList = this.list.filter(i => {
           return isIncludesKeyword(i, this.keyword, this.list);
         });
-        // 清除每个 节点的 children信息
-        this.filterList.forEach(node => {
-          if (node.children && node.children.length > 0) {
-            node.children = [];
-          }
-        });
-        // 过滤后的tree  同时也将children挂载到了this.filterList的节点
-        this.filterTree = listToTree(this.filterList);
       }
+      // 过滤后的tree  同时也将children挂载到了this.filterList的节点
+      this.filterTree = listToTree(this.filterList);
       breadthFirstEach({ tree: this.filterTree }, node => {
         if (!node.isLeaf) {
           node.leafCount = getLeafCount(this.filterTree, node);
