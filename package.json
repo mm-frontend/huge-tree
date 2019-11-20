@@ -1,7 +1,7 @@
 {
   "name": "@bitmain/components-tree",
   "version": "1.0.0",
-  "description": "",
+  "description": "海量数据tree<br>",
   "main": "src/library/components/hugeTree/hugeTree.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress",
@@ -85,5 +85,13 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lizhuang93/my-vue-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lizhuang93/my-vue-cli/issues"
+  },
+  "homepage": "https://github.com/lizhuang93/my-vue-cli#readme"
 }
