@@ -60,6 +60,7 @@ import {
   findSubTree,
   breadthFirstEach,
   findNode,
+  isBrother,
 } from './util.js';
 export default {
   components: {
@@ -94,6 +95,7 @@ export default {
       isSearching: false, // 搜索中
       list: [], // 扁平化的tree
       filterList: [], // 根据关键词过滤后的list
+      filterMap: {}, // filterList 对应的 map
       filterTree: [], // 根据关键词过滤后的tree
       disabledList: [], // disabled 为true组成的数组
       itemHeigth: 27, // 每一项的高度
@@ -179,16 +181,14 @@ export default {
         return;
       }
       if (keys.length === 0) return;
-      console.time();
       this.$nextTick(() => {
-        keys.forEach(id => {
-          const node = this.filterList.find(j => j.id === id);
+        const nodes = keys.map(id => this.filterMap[id]);
+        nodes.forEach((node, index) => {
           if (node && node.isLeaf) {
             node.checked = true;
-            this.handleCheckedChange(node);
+            if (!isBrother(node, nodes[index + 1])) this.handleCheckedChange(node);
           }
         });
-        console.timeEnd();
         this.emitChecked();
       });
     },
@@ -323,6 +323,8 @@ export default {
           return isIncludesKeyword(i, this.keyword, this.list);
         });
       }
+      this.filterMap = {};
+      this.filterList.forEach(node => (this.filterMap[node.id] = node));
       // 过滤后的tree  同时也将children挂载到了this.filterList的节点
       this.filterTree = listToTree(this.filterList);
       breadthFirstEach({ tree: this.filterTree }, node => {

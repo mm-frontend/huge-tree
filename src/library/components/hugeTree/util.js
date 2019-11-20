@@ -166,3 +166,15 @@ export function findNode(tree, rootId) {
     .flat(1);
   return findNode(childrenList, rootId);
 }
+
+/**
+ * 判断节点是否是亲兄弟
+ * @param {Object} node1
+ * @param {Object} node2
+ */
+export function isBrother(node1, node2) {
+  if (!node1 || !node2) return false;
+  const p1 = String(node1.path.slice(0, -1));
+  const p2 = String(node2.path.slice(0, -1));
+  return p1 === p2;
+}
