@@ -4,7 +4,7 @@
       <slot />
     </div>
     <div
-      v-if="showCheckbox"
+      v-if="showBox"
       :class="['box', { 'is-checked': checked, 'is-part-checked': indeterminate, 'is-disabled': disabled }]"
       @click="onChecked"
     ></div>
@@ -19,32 +19,29 @@ export default {
   },
   components: {},
   props: {
-    checked: {
-      type: Boolean,
-      default: false,
-    },
-    indeterminate: {
-      type: Boolean,
-      default: false,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    checkedAction: {
-      type: String,
-      default: 'none',
-    },
-    showCheckbox: {
-      type: Boolean,
-      default: false,
-    },
+    checked: { type: Boolean, default: false },
+    indeterminate: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    checkedAction: { type: String, default: 'none' },
+    showCheckbox: { type: Boolean, default: false },
+    isLeaf: { type: Boolean, default: true },
+    showCheckboxLeafOnly: { type: Boolean, default: false },
   },
   data() {
     return {};
   },
 
-  computed: {},
+  computed: {
+    showBox() {
+      if (this.showCheckbox) {
+        if (this.showCheckboxLeafOnly) {
+          return this.isLeaf;
+        }
+        return true;
+      }
+      return false;
+    },
+  },
 
   mounted() {},
 

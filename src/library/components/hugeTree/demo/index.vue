@@ -24,6 +24,7 @@
         :data="data"
         @onChange="onChange"
         @onClickLabel="onClickLabel"
+        @onClickCheckbox="onClickCheckbox"
       >
         <span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
       </huge-tree>
@@ -84,6 +85,9 @@ export default {
     },
     onClickLabel(node) {
       console.log('onClickLabel', node);
+    },
+    onClickCheckbox(node) {
+      console.log('onClickCheckbox', node);
     },
     onReload() {
       window.location.reload();

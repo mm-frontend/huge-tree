@@ -28,6 +28,8 @@
             v-model="item.checked"
             :indeterminate="item.indeterminate"
             :disabled="item.disabled"
+            :isLeaf="item.isLeaf"
+            :showCheckboxLeafOnly="showCheckboxLeafOnly"
             :checkedAction="checkedAction"
             :showCheckbox="showCheckbox"
             :class="{ 'is-disabled': item.disabled }"
@@ -88,6 +90,8 @@ export default {
     emptyText: { type: String, default: '暂无数据' },
     // 是否展示checkbox
     showCheckbox: { type: Boolean, default: false },
+    // showCheckboxLeafOnly
+    showCheckboxLeafOnly: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -223,6 +227,7 @@ export default {
 
     // 点击checkbox
     onChecked(node) {
+      this.$emit('onClickCheckbox', node);
       this.handleCheckedChange(node);
       this.emitChecked();
     },
