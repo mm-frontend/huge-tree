@@ -1,8 +1,8 @@
 {
-  "name": "my-vue-cli",
+  "name": "@bitmain/components-tree",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/library/components/hugeTree/hugeTree.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress",
     "build": "cross-env NODE_ENV=production webpack",

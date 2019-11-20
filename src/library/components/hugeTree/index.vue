@@ -63,6 +63,7 @@ import {
   isBrother,
 } from './util.js';
 export default {
+  name: 'BtmHugeTree',
   components: {
     'dt-checkbox': Checkbox,
   },
