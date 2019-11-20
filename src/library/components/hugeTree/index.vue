@@ -341,7 +341,7 @@ export default {
   },
 };
 </script>
-<style lang="less" style="text/less">
+<style lang="scss">
 .huge-tree {
   border: 1px solid #000;
   width: 340px;

@@ -55,6 +55,16 @@ module.exports = {
         ],
       },
       {
+        test: /\.scss$/,
+        use: [
+          {
+            // happpack 不支持 MiniCssExtractPlugin.loader
+            loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+          },
+          'happypack/loader?id=sass',
+        ],
+      },
+      {
         test: /\.vue$/,
         exclude: /(node_modules|bower_components)/,
         use: [
@@ -239,6 +249,23 @@ function happypack() {
         },
         {
           loader: 'less-loader',
+          options: { sourceMap: true },
+        },
+      ],
+      threadPool: happyThreadPool,
+    }),
+    new HappyPack({
+      id: 'sass',
+      loaders: [
+        {
+          loader: 'css-loader',
+        },
+        {
+          loader: 'postcss-loader',
+          options: { sourceMap: true },
+        },
+        {
+          loader: 'sass-loader',
           options: { sourceMap: true },
         },
       ],

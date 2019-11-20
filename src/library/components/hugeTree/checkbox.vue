@@ -68,7 +68,7 @@ export default {
 };
 </script>
 
-<style scoped lang="less" style="text/less">
+<style lang="scss">
 .check-box {
   flex: 1;
   display: flex;
