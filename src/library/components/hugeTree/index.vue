@@ -227,9 +227,9 @@ export default {
 
     // 点击checkbox
     onChecked(node) {
-      this.$emit('onClickCheckbox', node);
       this.handleCheckedChange(node);
       this.emitChecked();
+      this.$emit('onClickCheckbox', node);
     },
 
     // 发送给父组件选中信息
