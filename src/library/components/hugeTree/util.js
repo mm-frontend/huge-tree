@@ -75,22 +75,19 @@ export function listToTree(filterList) {
     //   }
     // },
   };
-  filterList.forEach(node => {
-    node.childrenMap = {};
-    const parentNode = (root, path) => {
-      const _path = path.slice();
-      const rootId = _path.shift();
-      if (_path.length > 1) {
-        return parentNode(root[rootId].childrenMap, _path);
-      }
-      if (_path.length === 1) {
-        return root[rootId].childrenMap;
-      }
-      return root;
-    };
-
-    parentNode(root, node.path)[node.id] = node;
-  });
+  // 定义查找父节点的函数，根据 path
+  const parentNode = (root, path) => {
+    const _path = path.slice();
+    const rootId = _path.shift();
+    if (_path.length > 1) {
+      return parentNode(root[rootId].childrenMap, _path);
+    }
+    if (_path.length === 1) {
+      return root[rootId].childrenMap;
+    }
+    return root;
+  };
+  // 设置filter后的 children
   const setChildren = root => {
     const nodes = Object.values(root);
     for (let node of nodes) {
@@ -100,6 +97,11 @@ export function listToTree(filterList) {
       }
     }
   };
+
+  filterList.forEach(node => {
+    node.childrenMap = {};
+    parentNode(root, node.path)[node.id] = node;
+  });
   setChildren(root);
   return Object.values(root);
 }

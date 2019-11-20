@@ -3,13 +3,6 @@
     <div class="btn-bar">
       huge-tree<br />
       点击按钮，展示tree<br />
-      <!-- 扁平化的list
-      <button @click="btnClick('count-501')">500条</button>
-      <button @click="btnClick('count-20001')">2w 条</button>
-      <button @click="btnClick('count-50001')">5w 条</button>
-      <button @click="btnClick('count-100001')">10w 条</button>
-      <button @click="btnClick('count-200001')">20w 条</button><br /> -->
-      tree型结构
       <button @click="btnClick('tree-500')">500条</button>
       <button @click="btnClick('tree-10000')">1w 条</button>
       <button @click="btnClick('tree-20000')">2w 条</button>
@@ -67,7 +60,7 @@ export default {
       //       isExpand: false, // 展开， 代码生成
       //       hidden: false, // 隐藏， 代码生成
       //       disabled: false, // 禁用， 可选
-      //       childrenCount: 100,  // 子、孙元素的数量，代码计算
+      //       leafCount: 100,  // 子、孙元素的数量，代码计算
       //     }
       // ],
     };

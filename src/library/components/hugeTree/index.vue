@@ -278,13 +278,6 @@ export default {
       parentNode.checked = childrenAllChecked;
       if (childrenAllChecked) parentNode.indeterminate = false;
       if (parentNode.parentId !== null) this.doParentChecked(parentNode.parentId);
-      // const allDirectChildren = this.filterList.filter(i => i.parentId === parentId);
-      // const parentNode = this.filterList.find(i => i.id === parentId);
-      // const childrenAllChecked = allDirectChildren.every(i => i.checked);
-      // this.checkParentIndeterminate(parentNode, allDirectChildren);
-      // parentNode.checked = childrenAllChecked;
-      // if (childrenAllChecked) parentNode.indeterminate = false;
-      // if (parentNode.parentId !== null) this.doParentChecked(parentNode.parentId);
     },
 
     // 子元素部分选中，核对祖先是否部分选中
