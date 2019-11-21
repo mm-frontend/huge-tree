@@ -22,6 +22,7 @@
         :showCheckbox="true"
         :height="600"
         :data="data"
+        :defaultCheckedKeys="checkedKeys"
         @onChange="onChange"
         @onClickLabel="onClickLabel"
         @onClickCheckbox="onClickCheckbox"
@@ -45,7 +46,7 @@ export default {
   props: {},
   data() {
     return {
-      checkedList: [],
+      checkedKeys: [],
       isLoading: true,
       isShowDialog: false,
       data: [],
@@ -77,7 +78,8 @@ export default {
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
         this.data = data;
         this.isLoading = false;
-        this.$refs['huge-tree'].setCheckedNodes([{ id: '1-3' }, { id: '1-5' }]);
+        // this.$refs['huge-tree'].setCheckedNodes([{ id: '1-3' }, { id: '1-5' }]);
+        this.checkedKeys = ['1-3', '1-5'];
       });
     },
     onChange({ checkedKeys, checkedNodes }) {

@@ -92,6 +92,8 @@ export default {
     showCheckbox: { type: Boolean, default: false },
     // showCheckboxLeafOnly
     showCheckboxLeafOnly: { type: Boolean, default: false },
+    // 默认勾选值
+    defaultCheckedKeys: { type: Array, default: () => [] },
   },
   data() {
     return {
@@ -129,6 +131,11 @@ export default {
     data(newVal, oldVal) {
       if (newVal !== oldVal && newVal.length > 0) {
         this.init('init');
+      }
+    },
+    defaultCheckedKeys(newVal, oldVal) {
+      if (newVal !== oldVal && newVal.length > 0) {
+        this.setCheckedKeys(newVal);
       }
     },
   },

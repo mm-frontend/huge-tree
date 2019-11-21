@@ -33,6 +33,7 @@
 | emptyText            | 内容为空展示的文本                                             | String         | --                                                      | '暂无数据'           |
 | showCheckbox         | 是否展示 checkbox                                              | Boolean        | --                                                      | false                |
 | showCheckboxLeafOnly | 是否仅叶子节点展示 checkbox, 配合 showCheckbox = true 才有效。 | Boolean        | --                                                      | false                |
+| defaultCheckedKeys   | 默认选中                                                       | Array          | --                                                      | []                   |
 
 ## 方法
 
