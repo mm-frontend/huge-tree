@@ -1,8 +1,8 @@
 <template>
   <div class="huge-tree">
     <section class="search-bar" v-if="hasInput">
-      <input type="text" class="filter-input" :placeholder="placeholder" v-model="keyword" @keyup.13="init" />
-      <button class="search-btn" @click="init">搜索</button>
+      <input type="text" class="filter-input" :placeholder="placeholder" v-model="keyword" @keyup.13="init('search')" />
+      <button class="search-btn" @click="init('search')">搜索</button>
     </section>
     <section
       v-if="filterList.length > 0"
@@ -128,18 +128,21 @@ export default {
   watch: {
     data(newVal, oldVal) {
       if (newVal !== oldVal && newVal.length > 0) {
-        this.init();
+        this.init('init');
       }
     },
   },
   mounted() {
-    this.init();
+    this.init('init');
   },
 
   methods: {
-    init() {
+    init(op) {
       if (this.data.length === 0) return;
-      if (this.list.length === 0) this.flatTree(JSON.parse(JSON.stringify(this.data)));
+      if (op === 'init') {
+        this.list = [];
+        this.flatTree(JSON.parse(JSON.stringify(this.data)));
+      }
       console.log('init');
       this.initFilter();
       this.initExpand();
