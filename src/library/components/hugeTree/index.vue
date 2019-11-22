@@ -134,7 +134,7 @@ export default {
       }
     },
     defaultCheckedKeys(newVal, oldVal) {
-      if (newVal !== oldVal && newVal.length > 0) {
+      if (newVal !== oldVal) {
         this.setCheckedKeys(newVal);
       }
     },
@@ -195,8 +195,11 @@ export default {
         console.warn('The argument to function setCheckedKeys must be an array');
         return;
       }
-      if (keys.length === 0) return;
       this.$nextTick(() => {
+        if (keys.length === 0) {
+          this.clearChecked();
+          return;
+        }
         const nodes = keys.map(id => this.filterMap[id]);
         nodes.forEach((node, index) => {
           if (node && node.isLeaf) {
@@ -352,6 +355,13 @@ export default {
           this.setRenderList();
         });
       }
+    },
+    // 清空所有选中
+    clearChecked() {
+      this.list.forEach(node => {
+        node.checked = false;
+        node.indeterminate = false;
+      });
     },
   },
 };

@@ -43,6 +43,7 @@
 | setCheckedNodes | 回显选中状态             | node 节点组成的数组 |
 | getCheckedKeys  | 返回 id 组成的数组       | --                  |
 | getCheckedNodes | 返回 node 节点组成的数组 | --                  |
+| clearChecked    | 清空所有选中             | --                  |
 
 ## Events
 
