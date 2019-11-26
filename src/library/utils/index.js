@@ -15,3 +15,12 @@ export const throttle = function(cb, time) {
     }
   };
 };
+
+export const debounce = function(cb, time) {
+  return function(params) {
+    clearTimeout(cb.timer);
+    cb.timer = setTimeout(() => {
+      cb();
+    }, time);
+  };
+};

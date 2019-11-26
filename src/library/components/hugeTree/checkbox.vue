@@ -47,6 +47,7 @@ export default {
 
   methods: {
     onChecked() {
+      if (this.disabled) return;
       this.$emit('checked-change', !this.checked);
       this.$emit('on-checked');
     },

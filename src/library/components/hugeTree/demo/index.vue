@@ -46,7 +46,7 @@ export default {
   props: {},
   data() {
     return {
-      checkedKeys: [],
+      checkedKeys: ['1-3'],
       isLoading: true,
       isShowDialog: false,
       data: [],
@@ -78,8 +78,10 @@ export default {
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
         this.data = data;
         this.isLoading = false;
-        // this.$refs['huge-tree'].setCheckedNodes([{ id: '1-3' }, { id: '1-5' }]);
-        this.checkedKeys = ['1-3', '1-5'];
+        setTimeout(() => {
+          // this.checkedKeys = ['1-3', '1-5'];
+          // this.$refs['huge-tree'].setCheckedKeys(['1-3', '1-5']);
+        }, 5000);
       });
     },
     onChange({ checkedKeys, checkedNodes }) {

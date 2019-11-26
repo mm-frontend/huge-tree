@@ -1,7 +1,14 @@
 <template>
   <div class="huge-tree">
     <section class="search-bar" v-if="hasInput">
-      <input type="text" class="filter-input" :placeholder="placeholder" v-model="keyword" @keyup.13="init('search')" />
+      <input
+        type="text"
+        class="filter-input"
+        :placeholder="placeholder"
+        v-model="keyword"
+        @keyup.13="init('search')"
+        @input="debounceInput('search')"
+      />
       <button class="search-btn" @click="init('search')">搜索</button>
     </section>
     <section
@@ -53,7 +60,7 @@
 </template>
 <script>
 import Checkbox from './checkbox.vue';
-import { throttle } from '../../utils/index.js';
+import { throttle, debounce } from '../../utils/index.js';
 import {
   isIncludesKeyword,
   getLeafCount,
@@ -110,6 +117,7 @@ export default {
       endIndex: 100, // 渲染的结束区间
       contentTranslateY: 0, // content 区域的位移
       throttleSrcoll: '', // 节流
+      debounceInput: '',
       checkedKeys: [], // 选中的 ids
       checkedNodes: [], // 选中的 nodes
     };
@@ -141,6 +149,8 @@ export default {
   },
   mounted() {
     this.init('init');
+    this.throttleSrcoll = throttle(this.setRenderList, 80);
+    this.debounceInput = debounce(this.init, 300);
   },
 
   methods: {
@@ -154,7 +164,6 @@ export default {
       this.initFilter();
       this.initExpand();
       this.setCheckedKeys(this.checkedKeys);
-      this.throttleSrcoll = throttle(this.setRenderList, 80);
       this.backToTop();
     },
 
