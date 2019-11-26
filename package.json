@@ -1,6 +1,6 @@
 {
   "name": "@bitmain/components-tree",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "海量数据tree<br>",
   "main": "src/library/components/hugeTree/hugeTree.js",
   "scripts": {

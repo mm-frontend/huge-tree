@@ -24,3 +24,27 @@ export const debounce = function(cb, time) {
     }, time);
   };
 };
+
+export const deepCopy = function(obj, cache = []) {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  // 避免循环引用导致爆栈
+  const hit = cache.find(i => i.original === obj);
+  if (hit) {
+    return hit.copy;
+  }
+
+  let copy = Array.isArray(obj) ? [] : {};
+
+  Object.keys(obj).forEach(key => {
+    copy[key] = deepCopy(obj[key], cache);
+  });
+
+  cache.push({
+    original: obj,
+    copy,
+  });
+  return copy;
+};

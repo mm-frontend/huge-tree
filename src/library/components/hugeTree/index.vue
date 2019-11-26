@@ -59,7 +59,7 @@
 </template>
 <script>
 import Checkbox from './checkbox.vue';
-import { throttle, debounce } from '../../utils/index.js';
+import { throttle, debounce, deepCopy } from '../../utils/index.js';
 import {
   isIncludesKeyword,
   getLeafCount,
@@ -157,7 +157,7 @@ export default {
       if (this.data.length === 0) return;
       if (op === 'init') {
         this.list = [];
-        this.flatTree(JSON.parse(JSON.stringify(this.data)));
+        this.flatTree(deepCopy(this.data));
       }
       console.log('init');
       this.initFilter();
