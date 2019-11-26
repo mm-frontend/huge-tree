@@ -38,13 +38,14 @@ export const deepCopy = function(obj, cache = []) {
 
   let copy = Array.isArray(obj) ? [] : {};
 
-  Object.keys(obj).forEach(key => {
-    copy[key] = deepCopy(obj[key], cache);
-  });
-
   cache.push({
     original: obj,
     copy,
   });
+
+  Object.keys(obj).forEach(key => {
+    copy[key] = deepCopy(obj[key], cache);
+  });
+
   return copy;
 };
