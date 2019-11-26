@@ -45,7 +45,6 @@
           >
             <div class="label">
               <slot :slot-scope="item">{{ item.label }}</slot>
-              <!-- getLeafCount 第三个参数为true, 表示为仅获取叶子节点 -->
               <i v-if="!item.isLeaf" class="count">({{ item.leafCount }})</i>
             </div>
           </dt-checkbox>
@@ -438,7 +437,11 @@ export default {
           height: 10px;
           border: 1px solid #4a4a4a;
           line-height: 10px;
+          transition: transform 0.3s ease-in-out;
           cursor: pointer;
+          &.is-expand {
+            transform: rotate(180deg);
+          }
           &:hover {
             color: #409eff;
             border-color: #409eff;
@@ -453,7 +456,7 @@ export default {
           }
           &.is-expand::before {
             content: '-';
-            top: -1px;
+            top: -2px;
             left: 0px;
           }
         }
