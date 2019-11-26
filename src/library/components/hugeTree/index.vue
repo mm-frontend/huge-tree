@@ -369,7 +369,6 @@ export default {
 <style lang="scss">
 .huge-tree {
   border: 1px solid #000;
-  width: 340px;
   padding: 10px 0;
   .search-bar {
     padding: 0 10px 10px 10px;

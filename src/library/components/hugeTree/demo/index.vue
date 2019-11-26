@@ -114,5 +114,8 @@ export default {
       }
     }
   }
+  .tree-wrap {
+    width: 400px;
+  }
 }
 </style>
