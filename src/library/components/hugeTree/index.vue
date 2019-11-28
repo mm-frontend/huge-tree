@@ -59,7 +59,7 @@
 </template>
 <script>
 import Checkbox from './checkbox.vue';
-import { throttle, debounce, deepCopy } from '../../utils/index.js';
+import { throttle, debounce } from '../../utils/index.js';
 import {
   isIncludesKeyword,
   getLeafCount,
@@ -117,7 +117,7 @@ export default {
       contentTranslateY: 0, // content 区域的位移
       throttleSrcoll: '', // 节流
       debounceInput: '',
-      checkedKeys: [], // 选中的 ids
+      checkedKeys: JSON.parse(JSON.stringify(this.defaultCheckedKeys)), // 选中的 ids
       checkedNodes: [], // 选中的 nodes
     };
   },
@@ -157,13 +157,14 @@ export default {
       if (this.data.length === 0) return;
       if (op === 'init') {
         this.list = [];
-        this.flatTree(deepCopy(this.data));
+        this.flatTree(this.data);
       }
-      console.log('init');
+
       this.initFilter();
       this.initExpand();
       this.setCheckedKeys(this.checkedKeys);
       this.backToTop();
+      console.log('init');
     },
 
     // 拉平 tree

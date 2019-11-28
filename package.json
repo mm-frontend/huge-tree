@@ -2,6 +2,7 @@
   "name": "@bitmain/components-tree",
   "version": "1.0.12",
   "description": "海量数据tree<br>",
+  "keywords": ["huge-tree", "huge-tree-vue", "tree", "large-tree", "vue"],
   "main": "src/library/components/hugeTree/hugeTree.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress",
@@ -12,7 +13,10 @@
     "analyz": "NODE_ENV=production npm_config_report=true npm run build",
     "mock:api": "nodemon ./mock/app.js"
   },
-  "author": "lizhuang",
+  "author": {
+    "name": "lizhuang",
+    "email": "lz760157714@gmail.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^9.5.1",
@@ -91,10 +95,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lizhuang93/my-vue-cli.git"
+    "url": "git+https://github.com/bitmain-frontend/huge-tree.git"
   },
   "bugs": {
-    "url": "https://github.com/lizhuang93/my-vue-cli/issues"
+    "url": "https://github.com/bitmain-frontend/huge-tree/issues"
   },
-  "homepage": "https://github.com/lizhuang93/my-vue-cli#readme"
+  "homepage": "https://github.com/bitmain-frontend/huge-tree#readme"
 }

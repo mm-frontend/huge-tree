@@ -79,9 +79,9 @@ export default {
         this.data = data;
         this.isLoading = false;
         setTimeout(() => {
-          // this.checkedKeys = ['1-3', '1-5'];
+          this.checkedKeys = ['1-5'];
           // this.$refs['huge-tree'].setCheckedKeys(['1-3', '1-5']);
-        }, 5000);
+        }, 1000);
       });
     },
     onChange({ checkedKeys, checkedNodes }) {
