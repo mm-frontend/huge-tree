@@ -27,6 +27,10 @@
         @onClickLabel="onClickLabel"
         @onClickCheckbox="onClickCheckbox"
       >
+        <select slot="pre-input" class="pre-select">
+          <option value="1">1111</option>
+          <option value="2">2222</option>
+        </select>
         <span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
       </huge-tree>
     </div>
@@ -118,6 +122,10 @@ export default {
   }
   .tree-wrap {
     width: 400px;
+    .pre-select {
+      cursor: pointer;
+      padding: 5px 10px;
+    }
   }
 }
 </style>

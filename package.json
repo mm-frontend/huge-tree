@@ -1,6 +1,6 @@
 {
   "name": "@bitmain/components-tree",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "海量数据tree<br>",
   "keywords": ["huge-tree", "huge-tree-vue", "tree", "large-tree", "vue"],
   "main": "src/library/components/hugeTree/hugeTree.js",

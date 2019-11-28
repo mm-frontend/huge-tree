@@ -1,6 +1,7 @@
 <template>
   <div class="huge-tree">
     <section class="search-bar" v-if="hasInput">
+      <slot name="pre-input"></slot>
       <input
         type="text"
         class="filter-input"
@@ -387,7 +388,6 @@ export default {
       flex: 1;
       border: 1px solid #dcdfe6;
       border-right: none;
-      border-radius: 4px 0 0 4px;
       padding: 8px 10px;
       &:focus {
         outline: none;
