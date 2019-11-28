@@ -69,3 +69,5 @@ Vue.use(BtmHugeTree)
 | name    | 说明                                                                                                |
 | ------- | --------------------------------------------------------------------------------------------------- |
 | default | label 的 slot， eg： `<span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>` |
+| pre-input | input 输入框前的 slot， eg： `<span slot="pre-input">https://</span>`                               |
+| loading   | 自定义加载中 slot， eg： `<i slot="loading">加载中...</i>`  
