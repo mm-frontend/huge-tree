@@ -53,7 +53,7 @@
       </div>
     </section>
     <section v-else class="no-data">
-      <p v-if="isLoading || isSearching">loading...</p>
+      <p v-if="isLoading || isSearching"><slot name="loading">loading...</slot></p>
       <p v-else>{{ emptyText }}</p>
     </section>
   </div>

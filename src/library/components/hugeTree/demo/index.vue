@@ -32,6 +32,7 @@
           <option value="2">2222</option>
         </select>
         <span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
+        <i slot="loading">加载中...</i>
       </huge-tree>
     </div>
     <read-me class="mark-down"></read-me>
