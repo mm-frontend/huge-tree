@@ -16,20 +16,8 @@ export default {
     return {
       list: [
         {
-          path: '/demo/triangleCoordinates',
-          text: '三角形坐标',
-        },
-        {
-          path: '/demo/uploadFile',
-          text: '上传图片',
-        },
-        {
-          path: '/demo/tooltip',
-          text: '纯css Tooltip',
-        },
-        {
-          path: '/demo/runSegment',
-          text: '运行时段',
+          path: '/demo/hugeList',
+          text: 'list组件(海量数据)',
         },
         {
           path: '/demo/hugeTree',
