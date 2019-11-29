@@ -37,7 +37,6 @@ Vue.use(BtmHugeTree)
 | hasInput             | 是否含有过滤输入框                                             | Boolean        | --                                                      | false                |
 | placeholder          | 过滤输入框的 placeholder，配合 hasInput 使用                   | String         | --                                                      | 请输入关键字进行查找 |
 | indent               | 缩进                                                           | String, Number | --                                                      | 15                   |
-| height               | 容器高度                                                       | String, Number | --                                                      | 600                  |
 | expandLevel          | 展开程度                                                       | String, Number | 'all',1,2,3,,,                                          | 'all'                |
 | isLoading            | 是否展示加载中                                                 | Boolean        | --                                                      | false                |
 | checkedAction        | 操作 label 执行选中                                            | String         | 'none': 不选中；'click': 单击选中；'dblclick': 双击选中 | 'none'               |

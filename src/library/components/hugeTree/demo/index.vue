@@ -20,7 +20,6 @@
         expandLevel="all"
         :isLoading="isLoading"
         :showCheckbox="true"
-        :height="600"
         :data="data"
         :defaultCheckedKeys="checkedKeys"
         @onChange="onChange"
@@ -122,6 +121,7 @@ export default {
     }
   }
   .tree-wrap {
+    height: 600px;
     width: 400px;
     .pre-select {
       cursor: pointer;

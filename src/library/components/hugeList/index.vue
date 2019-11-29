@@ -1,5 +1,5 @@
 <template>
-  <div ref="huge-list" class="huge-list" :style="`height: ${height}px`" @scroll="onScroll">
+  <div ref="huge-list" class="huge-list" @scroll="onScroll">
     <div class="list-phantom" :style="`height: ${phantomHeight}px`"></div>
     <ul v-if="list.length > 0" class="list-content" :style="`transform: translateY(${startIndex * itemHeight}px)`">
       <li v-for="(item, index) in renderList" :key="index">
@@ -21,7 +21,6 @@ export default {
   components: {},
   props: {
     list: { type: Array, default: () => [] },
-    height: { type: [Number, String], default: 600 },
     itemHeight: { type: [Number, String], default: 32 },
     // isLoading
     isLoading: { type: Boolean, default: false },
@@ -70,6 +69,8 @@ export default {
   position: relative;
   overflow: auto;
   padding: 0 10px;
+  min-height: 50px;
+  height: 100%;
   .list-phantom {
     position: absolute;
     left: 0;

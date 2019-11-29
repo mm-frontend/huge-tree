@@ -12,13 +12,7 @@
       />
       <button class="search-btn" @click="init('search')">搜索</button>
     </section>
-    <section
-      v-if="filterList.length > 0"
-      ref="content-wrap"
-      class="content-wrap"
-      @scroll="onScroll"
-      :style="`height:${height}px;`"
-    >
+    <section v-if="filterList.length > 0" ref="content-wrap" class="content-wrap" @scroll="onScroll">
       <div class="tree-phantom" :style="`height: ${phantomHeight}px`"></div>
       <div class="tree-content" :style="`transform: translateY(${startIndex * itemHeigth}px)`">
         <section
@@ -83,8 +77,6 @@ export default {
     indent: { type: [String, Number], default: 15 },
     // 展开 level，  all: 展开全部； 1: 只展示第一层(最外层)；2: 展示到第二层；、、、
     expandLevel: { type: [String, Number], default: 'all' },
-    // 容器高度
-    height: { type: [String, Number], default: 600 },
     // 海量数据
     data: { type: Array, default: () => [] },
     // 输入框 placeholder
@@ -380,6 +372,10 @@ export default {
 .huge-tree {
   border: 1px solid #000;
   padding: 10px 0;
+  min-height: 50px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .search-bar {
     padding: 0 10px 10px 10px;
     display: flex;
@@ -409,6 +405,7 @@ export default {
     position: relative;
     overflow: auto;
     padding: 0 10px;
+    flex: 1;
     .tree-phantom {
       position: absolute;
       left: 0;
