@@ -55,11 +55,11 @@ export default {
       this.$emit('on-click-label');
     },
     onSingleChecked() {
-      if (this.checkedAction === 'click' && this.showCheckbox) this.onChecked();
+      if (this.checkedAction === 'click' && this.showBox) this.onChecked();
       this.labelClick();
     },
     onDBLChecked() {
-      if (this.checkedAction === 'dblclick' && this.showCheckbox) this.onChecked();
+      if (this.checkedAction === 'dblclick' && this.showBox) this.onChecked();
       this.labelClick();
     },
   },
