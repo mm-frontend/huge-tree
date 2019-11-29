@@ -18,6 +18,7 @@
 <script>
 import { throttle } from '../../utils/index.js';
 export default {
+  name: 'BtmHugeList',
   components: {},
   props: {
     list: { type: Array, default: () => [] },

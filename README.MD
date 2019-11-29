@@ -1,72 +1,53 @@
 ## 使用方式
 npm i @bitmain/components-tree --save
-```
-// main.js
-import BtmHugeTree from '@bitmain/components-tree'
-Vue.use(BtmHugeTree)
 
-// demo.vue
+```
+// main.js， 全局使用
+import BTM from '@bitmain/components-tree'
+Vue.use(BTM)
+
+// demo1.vue, 使用 huge-tree
 <btm-huge-tree><btm-huge-tree/>
+
+// demo2.vue 使用 huge-list
+<btm-huge-list></btm-huge-list>
 ```
 
-## node 节点样例
-
 ```
-{
-  id: 0,
-  label: '全部',
-  parentId: null, // 根节点的 parentId 必须为 null
-  disabled: false, // 可选
-  children: [
-    {
-      id: 1,
-      label: '全部',
-      parentId: null, // 根节点的 parentId 必须为 null
-      disabled: false, // 可选
-      children: null
-    }
-  ]
-},
+// 按需使用
+import { HugeTree, HugeList } from '@bitmain/components-tree'
+Vue.use(HugeTree)
+Vue.use(HugeList)
 ```
 
-## Attributes
+```
+// demo.vue, 组件内部使用
+<template>
+  <div>
+    <btm-huge-tree></btm-huge-tree>
+  </div>
+</template>
 
-| 参数                 | 说明                                                           | 类型           | 可选值                                                  | 默认值               |
-| -------------------- | -------------------------------------------------------------- | -------------- | ------------------------------------------------------- | -------------------- |
-| data                 | tree                                                           | Array          | --                                                      | []                   |
-| hasInput             | 是否含有过滤输入框                                             | Boolean        | --                                                      | false                |
-| placeholder          | 过滤输入框的 placeholder，配合 hasInput 使用                   | String         | --                                                      | 请输入关键字进行查找 |
-| indent               | 缩进                                                           | String, Number | --                                                      | 15                   |
-| expandLevel          | 展开程度                                                       | String, Number | 'all',1,2,3,,,                                          | 'all'                |
-| isLoading            | 是否展示加载中                                                 | Boolean        | --                                                      | false                |
-| checkedAction        | 操作 label 执行选中                                            | String         | 'none': 不选中；'click': 单击选中；'dblclick': 双击选中 | 'none'               |
-| emptyText            | 内容为空展示的文本                                             | String         | --                                                      | '暂无数据'           |
-| showCheckbox         | 是否展示 checkbox                                              | Boolean        | --                                                      | false                |
-| showCheckboxLeafOnly | 是否仅叶子节点展示 checkbox, 配合 showCheckbox = true 才有效。 | Boolean        | --                                                      | false                |
-| defaultCheckedKeys   | 默认选中                                                       | Array          | --                                                      | []                   |
+<script>
+import { HugeTree } from '@bitmain/components-tree'
 
-## 方法
+export default {
+  components: {
+    'btm-huge-tree': HugeTree
+  }
+}
+</script>
+```
 
-| 事件名称        | 说明                     | 参数                |
-| --------------- | ------------------------ | ------------------- |
-| setCheckedKeys  | 回显选中状态             | id 组成的数组       |
-| setCheckedNodes | 回显选中状态             | node 节点组成的数组 |
-| getCheckedKeys  | 返回 id 组成的数组       | --                  |
-| getCheckedNodes | 返回 node 节点组成的数组 | --                  |
-| clearChecked    | 清空所有选中             | --                  |
+## Doc
+参见 github 各 demo<br>
+[huge-tree 使用doc](https://github.com/bitmain-frontend/huge-tree/tree/master/src/library/components/hugeTree/demo)<br>
+[huge-list 使用doc](https://github.com/bitmain-frontend/huge-tree/tree/master/src/library/components/hugeList/demo)
 
-## Events
 
-| 事件名称        | 说明                                   | 回调参数                         |
-| --------------- | -------------------------------------- | -------------------------------- |
-| onChange        | 选中状态变化触发                       | （{ checkedKeys, checkedNodes }) |
-| onClickLabel    | 点击 label 触发                        | node                             |
-| onClickCheckbox | 点击 checkbox 触发, 获取当前点击的节点 | node                             |
 
-## Scoped Slot
-
-| name    | 说明                                                                                                |
-| ------- | --------------------------------------------------------------------------------------------------- |
-| default | label 的 slot， eg： `<span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>` |
-| pre-input | input 输入框前的 slot， eg： `<span slot="pre-input">https://</span>`                               |
-| loading   | 自定义加载中 slot， eg： `<i slot="loading">加载中...</i>`  
+## 本地运行
+1. git clone
+2. yarn install
+3. yarn dev && yarn mock:api
+4. 0.0.0.0:8000
