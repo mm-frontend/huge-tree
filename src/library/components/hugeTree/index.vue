@@ -198,10 +198,7 @@ export default {
         return;
       }
       this.$nextTick(() => {
-        if (keys.length === 0) {
-          this.clearChecked();
-          return;
-        }
+        this.clearChecked();
         const nodes = keys.map(id => this.filterMap[id]);
         nodes.forEach((node, index) => {
           if (node && node.isLeaf) {
