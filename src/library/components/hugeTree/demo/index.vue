@@ -17,6 +17,7 @@
         ref="huge-tree"
         hasInput
         checkedAction="dblclick"
+        :expandKeys="expandKeys"
         expandLevel="all"
         :isLoading="isLoading"
         :showCheckbox="true"
@@ -54,6 +55,7 @@ export default {
       isLoading: true,
       isShowDialog: false,
       data: [],
+      expandKeys: [],
       // data: [
       //    {
       //       checked: false,
@@ -81,6 +83,7 @@ export default {
       this.isShowDialog = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
         this.data = data;
+        this.expandKeys = ['8-1', '10-1', '1-1'];
         this.isLoading = false;
         setTimeout(() => {
           this.checkedKeys = ['1-5'];

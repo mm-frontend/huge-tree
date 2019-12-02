@@ -75,7 +75,9 @@ export default {
     hasInput: { type: Boolean, default: false },
     // 缩进
     indent: { type: [String, Number], default: 15 },
-    // 展开 level，  all: 展开全部； 1: 只展示第一层(最外层)；2: 展示到第二层；、、、
+    // 指定ids展开
+    expandKeys: { type: Array, default: () => [] },
+    // 展开 level， all: 展开全部； 1: 只展示第一层(最外层)；2: 展示到第二层；、、、
     expandLevel: { type: [String, Number], default: 'all' },
     // 海量数据
     data: { type: Array, default: () => [] },
@@ -168,6 +170,10 @@ export default {
     },
     // 初始化处理展开逻辑
     initExpand() {
+      if (this.expandKeys.length > 0) {
+        this.setExpand(this.expandKeys);
+        return;
+      }
       if (/^\d+$/.test(this.expandLevel)) {
         this.filterList.forEach(node => {
           this.$set(node, 'isExpand', Boolean(node.path.length < this.expandLevel));
@@ -184,6 +190,21 @@ export default {
       }
     },
 
+    // 指定id展开
+    setExpand(keys = []) {
+      const nodes = keys.map(id => this.filterMap[id]);
+      const ids = [...new Set(nodes.map(node => node.path).flat(1))];
+      this.filterList.forEach(node => {
+        if (node.isLeaf) {
+          this.$set(node, 'isExpand', false);
+          this.$set(node, 'isHidden', Boolean(!ids.includes(node.parentId)));
+        } else {
+          this.$set(node, 'isExpand', Boolean(ids.includes(node.id)));
+          this.$set(node, 'isHidden', false);
+        }
+        this.initNode(node);
+      });
+    },
     // 初始化节点所需要的字段
     initNode(node) {
       this.$set(node, 'checked', node.checked, false);

@@ -27,6 +27,7 @@
 | placeholder          | 过滤输入框的 placeholder，配合 hasInput 使用                   | String         | --                                                      | 请输入关键字进行查找 |
 | indent               | 缩进                                                           | String, Number | --                                                      | 15                   |
 | expandLevel          | 展开程度                                                       | String, Number | 'all',1,2,3,,,                                          | 'all'                |
+| expandKeys           | 指定 id 展开, 若指定 id 展开，则 expandLevel 失效              | Array          |                                                         | []                   |
 | isLoading            | 是否展示加载中                                                 | Boolean        | --                                                      | false                |
 | checkedAction        | 操作 label 执行选中                                            | String         | 'none': 不选中；'click': 单击选中；'dblclick': 双击选中 | 'none'               |
 | emptyText            | 内容为空展示的文本                                             | String         | --                                                      | '暂无数据'           |
@@ -43,6 +44,7 @@
 | getCheckedKeys  | 返回 id 组成的数组       | --                  |
 | getCheckedNodes | 返回 node 节点组成的数组 | --                  |
 | clearChecked    | 清空所有选中             | --                  |
+| setExpand       | 指定 id 展开             | id 组成的数组       |
 
 ## Events
 
