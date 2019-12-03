@@ -147,6 +147,10 @@ export default {
     this.debounceInput = debounce(this.init, 300);
   },
 
+  beforeDestroy() {
+    this.clearAll(this.$data);
+  },
+
   methods: {
     init(op) {
       if (this.data.length === 0) return;
@@ -381,6 +385,20 @@ export default {
       this.list.forEach(node => {
         node.checked = false;
         node.indeterminate = false;
+      });
+    },
+
+    // 清空内存占用
+    clearAll(obj) {
+      if (typeof obj === 'function' || obj === null || typeof obj !== 'object') {
+        // console.log('obj---->', obj);
+        obj = null;
+        return;
+      }
+
+      Object.keys(obj).forEach(key => {
+        this.clearAll(obj[key]);
+        obj[key] = null;
       });
     },
   },
