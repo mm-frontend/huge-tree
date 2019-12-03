@@ -1,6 +1,6 @@
 <template>
   <div class="huge-demo">
-    <router-link :to="'/demo/hugeTree1'">hugeTree1</router-link>
+    <router-link :to="'/demo/hugeTree'">hugeTree</router-link>
     <div class="btn-bar">
       huge-tree<br />
       点击按钮，展示tree<br />
@@ -42,7 +42,7 @@
 
 <script>
 import axios from 'axios';
-import HugeTree from '../index.vue';
+import HugeTree from '../../hugeTree/index';
 import ReadMe from './readme.md';
 export default {
   components: {

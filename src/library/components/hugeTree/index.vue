@@ -211,7 +211,7 @@ export default {
     },
     // 初始化节点所需要的字段
     initNode(node) {
-      this.$set(node, 'checked', node.checked, false);
+      this.$set(node, 'checked', node.checked || false);
       this.$set(node, 'indeterminate', node.indeterminate || false);
       this.$set(node, 'disabled', node.disabled || false);
     },

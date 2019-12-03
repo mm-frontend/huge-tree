@@ -1,6 +1,7 @@
 const Nav = () => import(/* webpackChunkName: 'demo' */ './nav');
 const HugeList = () => import(/* webpackChunkName: 'demo' */ './components/hugeList/demo');
 const HugeTree = () => import(/* webpackChunkName: 'demo' */ './components/hugeTree/demo');
+const HugeTree1 = () => import(/* webpackChunkName: 'demo' */ './components/hugeTree1/demo');
 
 const routes = [
   {
@@ -17,6 +18,11 @@ const routes = [
     path: 'hugeTree',
     name: 'hugeTree',
     component: HugeTree,
+  },
+  {
+    path: 'hugeTree1',
+    name: 'hugeTree1',
+    component: HugeTree1,
   },
 ];
 

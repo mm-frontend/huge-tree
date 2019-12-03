@@ -1,4 +1,6 @@
 ## 使用方式
+// 因为直接使用的源码，模块需要经过 webpack 编译
+
 npm i @bitmain/components-tree --save
 
 ```
