@@ -212,7 +212,7 @@ export default {
 
     // 指定id展开
     setExpand(keys = []) {
-      const nodes = keys.map(id => listMap[id]);
+      const nodes = keys.map(id => listMap[id]).filter(v => v);
       const ids = [...new Set(nodes.map(node => node.path).flat(1))];
       filterList.forEach(node => {
         if (node.isLeaf) {

@@ -59,7 +59,7 @@ export const clearAll = function(obj) {
   }
 
   Object.keys(obj).forEach(key => {
-    clearAll(obj[key]);
+    // clearAll(obj[key]);
     obj[key] = null;
   });
 };
