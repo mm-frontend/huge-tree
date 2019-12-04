@@ -22,7 +22,6 @@
         expandLevel="all"
         :isLoading="isLoading"
         :showCheckbox="true"
-        :data="data"
         :defaultCheckedKeys="checkedKeys"
         @onChange="onChange"
         @onClickLabel="onClickLabel"
@@ -78,15 +77,15 @@ export default {
   computed: {},
 
   mounted() {
-    this.btnClick('tree-20000');
+    this.btnClick('tree-50000');
   },
 
   methods: {
     btnClick(count) {
       this.isShowDialog = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
-        this.data = data;
         this.expandKeys = ['8-1', '10-1', '1-1'];
+        this.$refs['huge-tree'].setData(data);
         this.isLoading = false;
         setTimeout(() => {
           this.checkedKeys = ['1-5'];

@@ -206,10 +206,10 @@ module.exports = {
     disableHostCheck: true,
     hot: true,
     proxy: {
-      //配置跨域，访问的域名会被代理到本地的3000端口
-      '/api': 'http://localhost:3000',
+      //配置跨域，访问的域名会被代理到本地的3001端口
+      '/api': 'http://localhost:3001',
       '/static': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3001',
         pathRewrite: { '^/static': '' },
       },
     },

@@ -12,38 +12,40 @@
       />
       <button class="search-btn" @click="init('search')">搜索</button>
     </section>
-    <section v-if="filterList.length > 0" ref="content-wrap" class="content-wrap" @scroll="onScroll">
+    <section v-if="renderList.length > 0" ref="content-wrap" class="content-wrap" @scroll="onScroll">
       <div class="tree-phantom" :style="`height: ${phantomHeight}px`"></div>
       <div class="tree-content" :style="`transform: translateY(${startIndex * itemHeigth}px)`">
-        <section
-          v-for="(item, index) in renderList"
-          :key="'k' + index"
-          :class="['item', { 'is-hidden': item.isHidden }]"
-          :style="`margin-left: ${(item.path.length - 1) * Number(indent)}px`"
-        >
-          <div
-            v-if="!item.isLeaf"
-            :class="[item.isLeaf ? 'leaf-node' : 'expand-node', { 'is-expand': item.isExpand }]"
-            @click="onExpand(item, index)"
-          ></div>
-          <dt-checkbox
-            v-model="item.checked"
-            :indeterminate="item.indeterminate"
-            :disabled="item.disabled"
-            :isLeaf="item.isLeaf"
-            :showCheckboxLeafOnly="showCheckboxLeafOnly"
-            :checkedAction="checkedAction"
-            :showCheckbox="showCheckbox"
-            :class="{ 'is-disabled': item.disabled }"
-            @on-checked="onChecked(item, index)"
-            @on-click-label="$emit('onClickLabel', item)"
+        <template v-for="(item, index) in renderList">
+          <section
+            v-if="item.path"
+            :key="'k' + index"
+            :class="['item', { 'is-hidden': item.isHidden }]"
+            :style="`margin-left: ${(item.path.length - 1) * Number(indent)}px`"
           >
-            <div class="label">
-              <slot :slot-scope="item">{{ item.label }}</slot>
-              <i v-if="!item.isLeaf" class="count">({{ item.leafCount }})</i>
-            </div>
-          </dt-checkbox>
-        </section>
+            <div
+              v-if="!item.isLeaf"
+              :class="[item.isLeaf ? 'leaf-node' : 'expand-node', { 'is-expand': item.isExpand }]"
+              @click="onExpand(item, index)"
+            ></div>
+            <dt-checkbox
+              v-model="item.checked"
+              :indeterminate="item.indeterminate"
+              :disabled="item.disabled"
+              :isLeaf="item.isLeaf"
+              :showCheckboxLeafOnly="showCheckboxLeafOnly"
+              :checkedAction="checkedAction"
+              :showCheckbox="showCheckbox"
+              :class="{ 'is-disabled': item.disabled }"
+              @on-checked="onChecked(item, index)"
+              @on-click-label="$emit('onClickLabel', item)"
+            >
+              <div class="label">
+                <slot :slot-scope="item">{{ item.label }}</slot>
+                <i v-if="!item.isLeaf" class="count">({{ item.leafCount }})</i>
+              </div>
+            </dt-checkbox>
+          </section>
+        </template>
       </div>
     </section>
     <section v-else class="no-data">
@@ -54,7 +56,7 @@
 </template>
 <script>
 import Checkbox from './checkbox.vue';
-import { throttle, debounce } from '../../utils/index.js';
+import { throttle, debounce, clearAll } from '../../utils/index.js';
 import {
   isIncludesKeyword,
   getLeafCount,
@@ -65,12 +67,23 @@ import {
   findNode,
   isBrother,
 } from './util.js';
+
+let _data = []; // 海量数据 tree
+let list = []; // 扁平化的tree
+let filterList = []; // 根据关键词过滤后的list
+let filterMap = {}; // filterList 对应的 map
+let filterTree = []; // 根据关键词过滤后的tree
+let disabledList = []; // disabled 为true组成的数组
+let checkedKeys = []; // 选中的 ids
+let checkedNodes = []; // 选中的 nodes
+
 export default {
   name: 'BtmHugeTree',
   components: {
     'dt-checkbox': Checkbox,
   },
   props: {
+    data: { type: Array, default: () => [] },
     // 含有过滤输入框
     hasInput: { type: Boolean, default: false },
     // 缩进
@@ -79,8 +92,6 @@ export default {
     expandKeys: { type: Array, default: () => [] },
     // 展开 level， all: 展开全部； 1: 只展示第一层(最外层)；2: 展示到第二层；、、、
     expandLevel: { type: [String, Number], default: 'all' },
-    // 海量数据
-    data: { type: Array, default: () => [] },
     // 输入框 placeholder
     placeholder: { type: String, default: '请输入关键字进行查找' },
     // isLoading
@@ -98,28 +109,21 @@ export default {
   },
   data() {
     return {
+      count: 1, // 用于视图更新
       getLeafCount, // 获取子孙元素list
       keyword: '', // 关键词
       isSearching: false, // 搜索中
-      list: [], // 扁平化的tree
-      filterList: [], // 根据关键词过滤后的list
-      filterMap: {}, // filterList 对应的 map
-      filterTree: [], // 根据关键词过滤后的tree
-      disabledList: [], // disabled 为true组成的数组
       itemHeigth: 27, // 每一项的高度
       startIndex: 0, // 渲染的开始区间
-      endIndex: 100, // 渲染的结束区间
-      contentTranslateY: 0, // content 区域的位移
+      endIndex: 70, // 渲染的结束区间
       throttleSrcoll: '', // 节流
       debounceInput: '',
-      checkedKeys: JSON.parse(JSON.stringify(this.defaultCheckedKeys)), // 选中的 ids
-      checkedNodes: [], // 选中的 nodes
     };
   },
   computed: {
     // 过滤掉 hidden 节点
     unHiddenList() {
-      return this.filterList.filter(i => !i.isHidden);
+      return this.count ? filterList.filter(i => !i.isHidden) : [];
     },
     // 虚拟高度，与隐藏的数量有关
     phantomHeight() {
@@ -131,8 +135,8 @@ export default {
   },
   watch: {
     data(newVal, oldVal) {
-      if (newVal !== oldVal && newVal.length > 0) {
-        this.init('init');
+      if (newVal !== oldVal) {
+        this.setData(newVal);
       }
     },
     defaultCheckedKeys(newVal, oldVal) {
@@ -140,38 +144,52 @@ export default {
         this.setCheckedKeys(newVal);
       }
     },
+    expandKeys(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.setExpand(newVal);
+      }
+    },
+  },
+  created() {
+    this.reset();
   },
   mounted() {
-    this.init('init');
-    this.throttleSrcoll = throttle(this.setRenderList, 80);
+    checkedKeys = JSON.parse(JSON.stringify(this.defaultCheckedKeys));
+    this.throttleSrcoll = throttle(this.setRenderRange, 80);
     this.debounceInput = debounce(this.init, 300);
   },
 
   beforeDestroy() {
-    this.clearAll(this.$data);
+    this.reset();
   },
 
   methods: {
+    // 设置海量数据
+    setData(data) {
+      _data = data;
+      this.init('init');
+    },
+
     init(op) {
-      if (this.data.length === 0) return;
+      if (_data.length === 0) return;
       if (op === 'init') {
-        this.list = [];
-        this.flatTree(this.data);
+        list = [];
+        this.flatTree(_data);
       }
 
       this.initFilter();
       this.initExpand();
-      this.setCheckedKeys(this.checkedKeys);
+      this.setCheckedKeys(checkedKeys);
       this.backToTop();
-      console.log('init');
     },
 
     // 拉平 tree
     flatTree(data) {
       depthFirstEach({ tree: data, init: true }, node => {
-        this.list.push(node);
+        list.push(node);
       });
     },
+
     // 初始化处理展开逻辑
     initExpand() {
       if (this.expandKeys.length > 0) {
@@ -179,41 +197,44 @@ export default {
         return;
       }
       if (/^\d+$/.test(this.expandLevel)) {
-        this.filterList.forEach(node => {
-          this.$set(node, 'isExpand', Boolean(node.path.length < this.expandLevel));
-          this.$set(node, 'isHidden', Boolean(node.path.length > this.expandLevel));
+        filterList.forEach(node => {
+          node.isExpand = Boolean(node.path.length < this.expandLevel);
+          node.isHidden = Boolean(node.path.length > this.expandLevel);
           this.initNode(node);
         });
       } else {
         // 展开全部
-        this.filterList.forEach(node => {
-          this.$set(node, 'isExpand', true);
-          this.$set(node, 'isHidden', false);
+        filterList.forEach(node => {
+          node.isExpand = true;
+          node.isHidden = false;
           this.initNode(node);
         });
       }
+      this.setCount();
     },
 
     // 指定id展开
     setExpand(keys = []) {
-      const nodes = keys.map(id => this.filterMap[id]);
+      const nodes = keys.map(id => filterMap[id]);
       const ids = [...new Set(nodes.map(node => node.path).flat(1))];
-      this.filterList.forEach(node => {
+      filterList.forEach(node => {
         if (node.isLeaf) {
-          this.$set(node, 'isExpand', false);
-          this.$set(node, 'isHidden', Boolean(!ids.includes(node.parentId)));
+          node.isExpand = false;
+          node.isHidden = Boolean(!ids.includes(node.parentId));
         } else {
-          this.$set(node, 'isExpand', Boolean(ids.includes(node.id)));
-          this.$set(node, 'isHidden', false);
+          node.isExpand = Boolean(ids.includes(node.id));
+          node.isHidden = false;
         }
         this.initNode(node);
       });
+      this.setCount();
     },
+
     // 初始化节点所需要的字段
     initNode(node) {
-      this.$set(node, 'checked', node.checked || false);
-      this.$set(node, 'indeterminate', node.indeterminate || false);
-      this.$set(node, 'disabled', node.disabled || false);
+      node.checked = node.checked || false;
+      node.indeterminate = node.indeterminate || false;
+      node.disabled = node.disabled || false;
     },
 
     // 回显选中状态
@@ -224,7 +245,7 @@ export default {
       }
       this.$nextTick(() => {
         this.clearChecked();
-        const nodes = keys.map(id => this.filterMap[id]);
+        const nodes = keys.map(id => filterMap[id]);
         nodes.forEach((node, index) => {
           if (node && node.isLeaf) {
             node.checked = true;
@@ -249,11 +270,11 @@ export default {
 
     // 获取选中状态
     getCheckedKeys() {
-      return this.checkedKeys;
+      return checkedKeys;
     },
 
     getCheckedNodes() {
-      return this.checkedNodes;
+      return checkedNodes;
     },
 
     // 点击展开与收缩
@@ -271,16 +292,17 @@ export default {
 
     // 发送给父组件选中信息
     emitChecked() {
-      this.checkedNodes = this.list.filter(i => i.checked || i.indeterminate); // 返回”所有“选中的节点 或者 父节点(子节点部分选中)
-      this.checkedKeys = this.checkedNodes.map(i => i.id);
-      this.$emit('onChange', { checkedKeys: this.checkedKeys, checkedNodes: this.checkedNodes });
+      this.setCount();
+      checkedNodes = list.filter(i => i.checked || i.indeterminate); // 返回”所有“选中的节点 或者 父节点(子节点部分选中)
+      checkedKeys = checkedNodes.map(i => i.id);
+      this.$emit('onChange', { checkedKeys: checkedKeys, checkedNodes: checkedNodes });
     },
     // 处理选中逻辑
     handleCheckedChange(node) {
       if (node.checked) node.indeterminate = false;
       this.doChildrenChecked(node);
       this.doParentChecked(node.parentId);
-      this.disabledList.forEach(node => {
+      disabledList.forEach(node => {
         this.doParentChecked(node.parentId);
       });
     },
@@ -299,6 +321,7 @@ export default {
           j.isExpand = false;
         });
       }
+      this.setCount();
     },
 
     // 处理子、孙后代
@@ -314,8 +337,8 @@ export default {
     // 处理自己及祖先
     doParentChecked(parentId) {
       if (parentId === null) return;
-      const allDirectChildren = findSubTree(this.filterTree, parentId);
-      const parentNode = findNode(this.filterTree, parentId);
+      const allDirectChildren = findSubTree(filterTree, parentId);
+      const parentNode = findNode(filterTree, parentId);
       const childrenAllChecked = allDirectChildren.every(i => i.checked);
       this.checkParentIndeterminate(parentNode, allDirectChildren);
       parentNode.checked = childrenAllChecked;
@@ -341,65 +364,73 @@ export default {
       this.throttleSrcoll();
     },
 
-    // 设置可见区域的 list
-    setRenderList(scrollTop = this.$refs['content-wrap'].scrollTop) {
-      const count = Math.ceil(this.$el.clientHeight / this.itemHeigth) + 60; // 可见项数
+    // 设置可见区域的区间
+    setRenderRange(scrollTop = this.$refs['content-wrap'].scrollTop) {
+      const count = Math.ceil(this.$el.clientHeight / this.itemHeigth) + 40; // 可见项数
       const startIndex = Math.floor(scrollTop / this.itemHeigth);
-      this.startIndex = startIndex > 30 ? startIndex - 30 : 0;
+      this.startIndex = startIndex > 20 ? startIndex - 20 : 0;
       this.endIndex = this.startIndex + count;
+      this.setCount();
     },
 
     // 筛选节点
     initFilter() {
       // set filterList
       if (this.keyword.trim() === '') {
-        this.filterList = this.list;
+        filterList = list;
       } else {
-        this.filterList = this.list.filter(i => {
-          return isIncludesKeyword(i, this.keyword, this.list);
+        filterList = list.filter(i => {
+          return isIncludesKeyword(i, this.keyword, list);
         });
       }
-      this.filterMap = {};
-      this.filterList.forEach(node => (this.filterMap[node.id] = node));
+      this.setCount();
+      filterMap = {};
+      filterList.forEach(node => (filterMap[node.id] = node));
       // 过滤后的tree  同时也将children挂载到了this.filterList的节点
-      this.filterTree = listToTree(this.filterList);
-      breadthFirstEach({ tree: this.filterTree }, node => {
+      filterTree = listToTree(filterList);
+      breadthFirstEach({ tree: filterTree }, node => {
         if (!node.isLeaf) {
-          node.leafCount = getLeafCount(this.filterTree, node);
+          node.leafCount = getLeafCount(filterTree, node);
         }
       });
-      this.disabledList = this.filterList.filter(i => i.disabled);
+      disabledList = filterList.filter(i => i.disabled);
     },
 
     // 回到顶部
     backToTop() {
-      if (this.filterList.length > 0) {
+      if (filterList.length > 0) {
         this.$nextTick(() => {
           this.$refs['content-wrap'].scrollTop = 0;
-          this.setRenderList();
+          this.setRenderRange();
         });
       }
     },
+
     // 清空所有选中
     clearChecked() {
-      this.list.forEach(node => {
+      list.forEach(node => {
         node.checked = false;
         node.indeterminate = false;
       });
     },
 
-    // 清空内存占用
-    clearAll(obj) {
-      if (typeof obj === 'function' || obj === null || typeof obj !== 'object') {
-        // console.log('obj---->', obj);
-        obj = null;
-        return;
-      }
+    // 根据 count 触发 computed
+    setCount() {
+      this.count++;
+    },
 
-      Object.keys(obj).forEach(key => {
-        this.clearAll(obj[key]);
-        obj[key] = null;
-      });
+    // 清空内存占用
+    reset() {
+      this.count = 0;
+      clearAll(list);
+      _data = []; // 海量数据 tree
+      list = []; // 扁平化的tree
+      filterList = []; // 根据关键词过滤后的list
+      filterMap = {}; // filterList 对应的 map
+      filterTree = []; // 根据关键词过滤后的tree
+      disabledList = []; // disabled 为true组成的数组
+      checkedKeys = []; // 选中的 ids
+      checkedNodes = []; // 选中的 nodes
     },
   },
 };

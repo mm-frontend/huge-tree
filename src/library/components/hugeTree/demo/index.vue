@@ -11,6 +11,7 @@
       <button @click="btnClick('tree-100000')">10w 条</button>
       <button @click="btnClick('tree-200000')">20w 条</button><br />
       <button @click="onReload">刷新</button>
+      <button @click="des">des</button>
     </div>
 
     <div class="tree-wrap" v-show="isShowDialog">
@@ -22,7 +23,6 @@
         expandLevel="all"
         :isLoading="isLoading"
         :showCheckbox="true"
-        :data="data"
         :defaultCheckedKeys="checkedKeys"
         @onChange="onChange"
         @onClickLabel="onClickLabel"
@@ -78,18 +78,18 @@ export default {
   computed: {},
 
   mounted() {
-    this.btnClick('tree-20000');
+    this.btnClick('tree-50000');
   },
 
   methods: {
     btnClick(count) {
       this.isShowDialog = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
-        this.data = data;
-        this.expandKeys = ['8-1', '10-1', '1-1'];
+        this.expandKeys = ['8-1', '10-1'];
+        this.$refs['huge-tree'].setData(data);
+        this.checkedKeys = ['1-4'];
         this.isLoading = false;
         setTimeout(() => {
-          this.checkedKeys = ['1-5'];
           // this.$refs['huge-tree'].setCheckedKeys(['1-3', '1-5']);
         }, 1000);
       });
@@ -105,6 +105,9 @@ export default {
     },
     onReload() {
       window.location.reload();
+    },
+    des() {
+      this.$refs['huge-tree'].des();
     },
   },
 };
