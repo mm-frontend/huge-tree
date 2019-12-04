@@ -51,7 +51,7 @@ export const deepCopy = function(obj, cache = []) {
 };
 
 // 基本数据类型置 null, 清空内存占用
-export const clearAll = function() {
+export const clearAll = function(obj) {
   if (typeof obj === 'function' || obj === null || typeof obj !== 'object') {
     // console.log('obj---->', obj);
     obj = null;
@@ -59,7 +59,7 @@ export const clearAll = function() {
   }
 
   Object.keys(obj).forEach(key => {
-    this.clearAll(obj[key]);
+    clearAll(obj[key]);
     obj[key] = null;
   });
 };

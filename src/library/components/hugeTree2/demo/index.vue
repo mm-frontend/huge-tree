@@ -1,7 +1,7 @@
 <template>
   <div class="huge-demo">
-    <router-link :to="'/demo/hugeTree1'">hugeTree1</router-link>
-    <button @click="nav">hugeTree1</button>
+    <router-link :to="'/demo/hugeTree'">hugeTree</router-link>
+    <button @click="nav">hugeTree</button>
     <div class="btn-bar">
       huge-tree<br />
       点击按钮，展示tree<br />
@@ -12,7 +12,6 @@
       <button @click="btnClick('tree-100000')">10w 条</button>
       <button @click="btnClick('tree-200000')">20w 条</button><br />
       <button @click="onReload">刷新</button>
-      <button @click="reset">reset</button>
     </div>
 
     <div class="tree-wrap" v-show="isShowDialog">
@@ -37,18 +36,16 @@
         <i slot="loading">加载中...</i>
       </huge-tree>
     </div>
-    <read-me class="mark-down"></read-me>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import HugeTree from '../index.vue';
-import ReadMe from './readme.md';
+import HugeTree from '../../hugeTree/index';
+
 export default {
   components: {
     HugeTree,
-    ReadMe,
   },
   props: {},
   data() {
@@ -84,16 +81,16 @@ export default {
 
   methods: {
     nav() {
-      this.$router.replace('/demo/hugeTree1');
+      this.$router.replace('/demo/hugeTree');
     },
     btnClick(count) {
       this.isShowDialog = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
-        this.expandKeys = ['8-1', '10-1'];
+        this.expandKeys = ['8-1', '10-1', '1-1'];
         this.$refs['huge-tree'].setData(data);
-        this.checkedKeys = ['1-4'];
         this.isLoading = false;
         setTimeout(() => {
+          this.checkedKeys = ['1-5'];
           // this.$refs['huge-tree'].setCheckedKeys(['1-3', '1-5']);
         }, 1000);
       });
@@ -109,9 +106,6 @@ export default {
     },
     onReload() {
       window.location.reload();
-    },
-    reset() {
-      this.$refs['huge-tree'].reset();
     },
   },
 };

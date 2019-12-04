@@ -1,6 +1,7 @@
 <template>
   <div class="huge-demo">
-    <router-link :to="'/demo/hugeTree'">hugeTree</router-link>
+    <router-link :to="'/demo/hugeTree2'">hugeTree2</router-link>
+    <button @click="nav">hugeTree2</button>
     <div class="btn-bar">
       huge-tree<br />
       点击按钮，展示tree<br />
@@ -35,18 +36,15 @@
         <i slot="loading">加载中...</i>
       </huge-tree>
     </div>
-    <read-me class="mark-down"></read-me>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import HugeTree from '../../hugeTree/index';
-import ReadMe from './readme.md';
 export default {
   components: {
     HugeTree,
-    ReadMe,
   },
   props: {},
   data() {
@@ -77,10 +75,13 @@ export default {
   computed: {},
 
   mounted() {
-    this.btnClick('tree-50000');
+    this.btnClick('tree-200000');
   },
 
   methods: {
+    nav() {
+      this.$router.replace('/demo/hugeTree2');
+    },
     btnClick(count) {
       this.isShowDialog = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {

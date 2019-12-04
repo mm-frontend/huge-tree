@@ -140,7 +140,7 @@ export function findSubTree(tree, rootId) {
   }
   if (!tree || tree.length === 0) return [];
   const item = tree.find(node => node.id === rootId);
-  if (item) return item.children;
+  if (item) return item.children || [];
   const childrenList = tree
     .filter(node => node.children)
     .map(i => i.children)

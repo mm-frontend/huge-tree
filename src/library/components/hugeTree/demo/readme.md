@@ -22,7 +22,6 @@
 
 | 参数                 | 说明                                                           | 类型           | 可选值                                                  | 默认值               |
 | -------------------- | -------------------------------------------------------------- | -------------- | ------------------------------------------------------- | -------------------- |
-| data                 | tree                                                           | Array          | --                                                      | []                   |
 | hasInput             | 是否含有过滤输入框                                             | Boolean        | --                                                      | false                |
 | placeholder          | 过滤输入框的 placeholder，配合 hasInput 使用                   | String         | --                                                      | 请输入关键字进行查找 |
 | indent               | 缩进                                                           | String, Number | --                                                      | 15                   |
@@ -39,12 +38,14 @@
 
 | 事件名称        | 说明                     | 参数                |
 | --------------- | ------------------------ | ------------------- |
+| setData         | 设置 tree                | tree(Array 类型)    |
 | setCheckedKeys  | 回显选中状态             | id 组成的数组       |
 | setCheckedNodes | 回显选中状态             | node 节点组成的数组 |
 | getCheckedKeys  | 返回 id 组成的数组       | --                  |
 | getCheckedNodes | 返回 node 节点组成的数组 | --                  |
 | clearChecked    | 清空所有选中             | --                  |
 | setExpand       | 指定 id 展开             | id 组成的数组       |
+| reset           | 清空内存占用             | --                  |
 
 ## Events
 

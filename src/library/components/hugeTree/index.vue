@@ -71,7 +71,7 @@ import {
 let _data = []; // 海量数据 tree
 let list = []; // 扁平化的tree
 let filterList = []; // 根据关键词过滤后的list
-let filterMap = {}; // filterList 对应的 map
+let listMap = {}; // filterList 对应的 map
 let filterTree = []; // 根据关键词过滤后的tree
 let disabledList = []; // disabled 为true组成的数组
 let checkedKeys = []; // 选中的 ids
@@ -152,8 +152,6 @@ export default {
   },
   created() {
     this.reset();
-  },
-  mounted() {
     checkedKeys = JSON.parse(JSON.stringify(this.defaultCheckedKeys));
     this.throttleSrcoll = throttle(this.setRenderRange, 80);
     this.debounceInput = debounce(this.init, 300);
@@ -173,12 +171,11 @@ export default {
     init(op) {
       if (_data.length === 0) return;
       if (op === 'init') {
-        list = [];
         this.flatTree(_data);
+        list.forEach(node => (listMap[node.id] = node));
       }
-
       this.initFilter();
-      this.initExpand();
+      if (op === 'init') this.initExpand();
       this.setCheckedKeys(checkedKeys);
       this.backToTop();
     },
@@ -215,7 +212,7 @@ export default {
 
     // 指定id展开
     setExpand(keys = []) {
-      const nodes = keys.map(id => filterMap[id]);
+      const nodes = keys.map(id => listMap[id]);
       const ids = [...new Set(nodes.map(node => node.path).flat(1))];
       filterList.forEach(node => {
         if (node.isLeaf) {
@@ -243,17 +240,15 @@ export default {
         console.warn('The argument to function setCheckedKeys must be an array');
         return;
       }
-      this.$nextTick(() => {
-        this.clearChecked();
-        const nodes = keys.map(id => filterMap[id]);
-        nodes.forEach((node, index) => {
-          if (node && node.isLeaf) {
-            node.checked = true;
-            if (!isBrother(node, nodes[index + 1])) this.handleCheckedChange(node);
-          }
-        });
-        this.emitChecked();
+      this.clearChecked();
+      const nodes = keys.map(id => listMap[id]);
+      nodes.forEach((node, index) => {
+        if (node && node.isLeaf) {
+          node.checked = true;
+          if (!isBrother(node, nodes[index + 1])) this.handleCheckedChange(node);
+        }
       });
+      this.emitChecked();
     },
 
     // 回显选中状态
@@ -292,10 +287,10 @@ export default {
 
     // 发送给父组件选中信息
     emitChecked() {
-      this.setCount();
       checkedNodes = list.filter(i => i.checked || i.indeterminate); // 返回”所有“选中的节点 或者 父节点(子节点部分选中)
       checkedKeys = checkedNodes.map(i => i.id);
       this.$emit('onChange', { checkedKeys: checkedKeys, checkedNodes: checkedNodes });
+      this.setCount();
     },
     // 处理选中逻辑
     handleCheckedChange(node) {
@@ -336,7 +331,7 @@ export default {
 
     // 处理自己及祖先
     doParentChecked(parentId) {
-      if (parentId === null) return;
+      if (parentId === null || parentId === undefined) return;
       const allDirectChildren = findSubTree(filterTree, parentId);
       const parentNode = findNode(filterTree, parentId);
       const childrenAllChecked = allDirectChildren.every(i => i.checked);
@@ -384,8 +379,6 @@ export default {
         });
       }
       this.setCount();
-      filterMap = {};
-      filterList.forEach(node => (filterMap[node.id] = node));
       // 过滤后的tree  同时也将children挂载到了this.filterList的节点
       filterTree = listToTree(filterList);
       breadthFirstEach({ tree: filterTree }, node => {
@@ -426,7 +419,7 @@ export default {
       _data = []; // 海量数据 tree
       list = []; // 扁平化的tree
       filterList = []; // 根据关键词过滤后的list
-      filterMap = {}; // filterList 对应的 map
+      listMap = {}; // filterList 对应的 map
       filterTree = []; // 根据关键词过滤后的tree
       disabledList = []; // disabled 为true组成的数组
       checkedKeys = []; // 选中的 ids
