@@ -136,11 +136,6 @@ export default {
     },
   },
   watch: {
-    data(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.setData(newVal);
-      }
-    },
     defaultCheckedKeys(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.setCheckedKeys(newVal);
@@ -166,6 +161,7 @@ export default {
   methods: {
     // 设置海量数据
     setData(data) {
+      this.reset();
       this.big._data = data;
       this.init('init');
     },
@@ -191,6 +187,7 @@ export default {
 
     // 初始化处理展开逻辑
     initExpand() {
+      if (!this.big || this.big._data.length === 0) return;
       if (this.expandKeys.length > 0) {
         this.setExpand(this.expandKeys);
         return;
@@ -214,6 +211,7 @@ export default {
 
     // 指定id展开
     setExpand(keys = []) {
+      if (!this.big || this.big._data.length === 0) return;
       const nodes = keys.map(id => this.big.listMap[id]).filter(v => v);
       const ids = Array.from(new Set(nodes.map(node => node.path).flat(1)));
       this.big.filterList.forEach(node => {
@@ -418,15 +416,16 @@ export default {
     reset() {
       this.count = 0;
       clearAll(this.big.list);
-      this.big._data = []; // 海量数据 tree
-      this.big.list = []; // 扁平化的tree
-      this.big.filterList = []; // 根据关键词过滤后的list
-      this.big.listMap = {}; // this.big.filterList 对应的 map
-      this.big.filterTree = []; // 根据关键词过滤后的tree
-      this.big.disabledList = []; // disabled 为true组成的数组
-      this.big.checkedKeys = []; // 选中的 ids
-      this.big.checkedNodes = []; // 选中的 nodes
-      this.big = null;
+      if (this.big) {
+        this.big._data = []; // 海量数据 tree
+        this.big.list = []; // 扁平化的tree
+        this.big.filterList = []; // 根据关键词过滤后的list
+        this.big.listMap = {}; // this.big.filterList 对应的 map
+        this.big.filterTree = []; // 根据关键词过滤后的tree
+        this.big.disabledList = []; // disabled 为true组成的数组
+        this.big.checkedKeys = []; // 选中的 ids
+        this.big.checkedNodes = []; // 选中的 nodes
+      }
     },
   },
 };
