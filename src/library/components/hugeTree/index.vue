@@ -215,7 +215,7 @@ export default {
     // 指定id展开
     setExpand(keys = []) {
       const nodes = keys.map(id => this.big.listMap[id]).filter(v => v);
-      const ids = [...new Set(nodes.map(node => node.path).flat(1))];
+      const ids = Array.from(new Set(nodes.map(node => node.path).flat(1)));
       this.big.filterList.forEach(node => {
         if (node.isLeaf) {
           node.isExpand = false;
