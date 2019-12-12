@@ -12,7 +12,9 @@
       <button @click="btnClick('tree-100000')">10w 条</button>
       <button @click="btnClick('tree-200000')">20w 条</button><br />
       <button @click="onReload">刷新</button>
-      <button @click="reset">reset</button>
+      <button @click="invokeRef('showCheckedOnly')">showCheckedOnly</button>
+      <button @click="invokeRef('restore')">restore</button>
+      <button @click="invokeRef('clear')">clear</button>
     </div>
 
     <div class="tree-wrap" v-show="isShowDialog">
@@ -56,7 +58,6 @@ export default {
       checkedKeys: ['1-3'],
       isLoading: true,
       isShowDialog: false,
-      data: [],
       expandKeys: [],
       // data: [
       //    {
@@ -81,6 +82,8 @@ export default {
   mounted() {
     this.btnClick('tree-200000');
   },
+
+  beforeDestroy() {},
 
   methods: {
     nav() {
@@ -110,8 +113,8 @@ export default {
     onReload() {
       window.location.reload();
     },
-    reset() {
-      this.$refs['huge-tree'].reset();
+    invokeRef(name) {
+      this.$refs['huge-tree'][name]();
     },
   },
 };

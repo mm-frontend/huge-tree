@@ -7,10 +7,10 @@
         class="filter-input"
         :placeholder="placeholder"
         v-model="keyword"
-        @keyup.13="init('search')"
-        @input="debounceInput('search')"
+        @keyup.13="init"
+        @input="debounceInput"
       />
-      <button class="search-btn" @click="init('search')">搜索</button>
+      <button class="search-btn" @click="init">搜索</button>
     </section>
     <section v-if="renderList.length > 0" ref="content-wrap" class="content-wrap" @scroll="onScroll">
       <div class="tree-phantom" :style="`height: ${phantomHeight}px`"></div>
@@ -66,6 +66,7 @@ import {
   breadthFirstEach,
   findNode,
   isBrother,
+  isCheckedOrIndeterminate,
 } from './util.js';
 
 class BigData {
@@ -155,25 +156,26 @@ export default {
   },
 
   beforeDestroy() {
-    this.reset();
+    this.clear();
   },
 
   methods: {
     // 设置海量数据
     setData(data) {
-      this.reset();
+      this.clear();
       this.big._data = data;
       this.init('init');
     },
 
     init(op) {
+      // op: init, restore, showCheckedOnly
       if (this.big._data.length === 0) return;
       if (op === 'init') {
         this.flatTree(this.big._data);
         this.big.list.forEach(node => (this.big.listMap[node.id] = node));
       }
-      this.initFilter();
-      if (op === 'init') this.initExpand();
+      this.initFilter(op);
+      if (op === 'init' || op === 'restore') this.initExpand();
       this.setCheckedKeys(this.big.checkedKeys);
       this.backToTop();
     },
@@ -369,15 +371,9 @@ export default {
     },
 
     // 筛选节点
-    initFilter() {
+    initFilter(op) {
       // set this.big.filterList
-      if (this.keyword.trim() === '') {
-        this.big.filterList = this.big.list;
-      } else {
-        this.big.filterList = this.big.list.filter(i => {
-          return isIncludesKeyword(i, this.keyword, this.big.list);
-        });
-      }
+      this.setFilterList(op);
       this.setCount();
       // 过滤后的tree  同时也将children挂载到了this.filterList的节点
       this.big.filterTree = listToTree(this.big.filterList);
@@ -389,9 +385,32 @@ export default {
       this.big.disabledList = this.big.filterList.filter(i => i.disabled);
     },
 
+    // set this.big.filterList
+    setFilterList(op) {
+      if (op === 'showCheckedOnly') {
+        // 不直接 this.big.filterList = this.big.list, 因为之前的 filter 将 滤掉的 非叶子节点indeterminate = true 丢失了。
+        this.big.filterList = this.big.list.filter(i => {
+          const is = isCheckedOrIndeterminate(i, this.big.list);
+          if (is) {
+            i.checked = true;
+            i.indeterminate = false;
+          }
+          return is;
+        });
+        return;
+      }
+      if (this.keyword.trim() === '') {
+        this.big.filterList = this.big.list;
+        return;
+      }
+      this.big.filterList = this.big.list.filter(i => {
+        return isIncludesKeyword(i, this.keyword, this.big.list);
+      });
+    },
+
     // 回到顶部
     backToTop() {
-      if (this.big.filterList.length > 0) {
+      if (this.big.renderList && this.big.renderList.length > 0) {
         this.$nextTick(() => {
           this.$refs['content-wrap'].scrollTop = 0;
           this.setRenderRange();
@@ -412,8 +431,23 @@ export default {
       this.count++;
     },
 
+    // 仅展示选中的项
+    showCheckedOnly() {
+      this.keyword = '';
+      this.setFilterList();
+      this.init('showCheckedOnly');
+    },
+
+    restore() {
+      this.init('restore');
+    },
+    // 手动更新选中状态
+    update() {
+      this.setCount();
+    },
+
     // 清空内存占用
-    reset() {
+    clear() {
       this.count = 0;
       clearAll(this.big.list);
       if (this.big) {

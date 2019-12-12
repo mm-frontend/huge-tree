@@ -19,6 +19,24 @@ export function isIncludesKeyword(node, keyword, list) {
 }
 
 /**
+ * 自己 || 子 || 孙 是否选中
+ * @param {Object} node 节点
+ * @param {Array} list
+ */
+export function isCheckedOrIndeterminate(node, list) {
+  const is = node.checked || node.indeterminate;
+  if (is) {
+    // 自己匹配上了
+    return true;
+  }
+  if (!node.isLeaf) {
+    const allDirectChildren = list.filter(i => i.parentId === node.id);
+    return allDirectChildren.some(i => isCheckedOrIndeterminate(i, list));
+  }
+  return false;
+}
+
+/**
  * 获取后代 叶子节点的数量
  * @param {Object} node
  * @param {Array}} tree
@@ -70,7 +88,7 @@ export function listToTree(filterList) {
     //   id: 0,
     //   lalbel: '333',
     //   childrenMap: {
-    //     1: {id: 1},
+    //     1: {id: 1, label: '', childrenMap: {}},
     //     2: {}
     //   }
     // },
@@ -159,7 +177,7 @@ export function findNode(tree, rootId) {
     console.warn('The parameter tree to function findNode must be an array');
     return;
   }
-  if (!tree || tree.length === 0) return [];
+  if (!tree || tree.length === 0) return {};
   const item = tree.find(node => node.id === rootId);
   if (item) return item;
   const childrenList = tree

@@ -207,9 +207,9 @@ module.exports = {
     hot: true,
     proxy: {
       //配置跨域，访问的域名会被代理到本地的3001端口
-      '/api': 'http://localhost:3001',
+      '/api': 'http://localhost:4000',
       '/static': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:4000',
         pathRewrite: { '^/static': '' },
       },
     },
