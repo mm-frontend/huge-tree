@@ -299,8 +299,8 @@ export default {
       if (node.checked) node.indeterminate = false;
       this.doChildrenChecked(node);
       this.doParentChecked(node.parentId);
-      this.big.disabledList.forEach(node => {
-        this.doParentChecked(node.parentId);
+      this.big.disabledList.forEach((node, index) => {
+        if (!isBrother(node, this.big.disabledList[index + 1])) this.doParentChecked(node.parentId);
       });
     },
 
