@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { depthFirstEach } from './util.js';
 export default {
   model: {
     prop: 'checked',
@@ -26,6 +27,7 @@ export default {
     showCheckbox: { type: Boolean, default: false },
     isLeaf: { type: Boolean, default: true },
     showCheckboxLeafOnly: { type: Boolean, default: false },
+    node: { type: Object, default: () => {} },
   },
   data() {
     return {};
@@ -48,7 +50,7 @@ export default {
   methods: {
     onChecked() {
       if (this.disabled) return;
-      this.$emit('checked-change', !this.checked);
+      this.$emit('checked-change', this.getNewChecked(this.checked));
       this.$emit('on-checked');
     },
     labelClick() {
@@ -61,6 +63,20 @@ export default {
     onDBLChecked() {
       if (this.checkedAction === 'dblclick' && this.showBox) this.onChecked();
       this.labelClick();
+    },
+
+    getNewChecked(oldChecked) {
+      if (this.node.isLeaf) {
+        return !oldChecked;
+      }
+      let newChecked = false;
+      depthFirstEach({ tree: this.node.children }, node => {
+        if (node.isLeaf && !node.disabled && !node.checked) {
+          newChecked = true;
+          return 'break';
+        }
+      });
+      return newChecked;
     },
   },
 };

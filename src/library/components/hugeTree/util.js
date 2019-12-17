@@ -70,7 +70,10 @@ export function depthFirstEach({ tree, path = [], init = false }, cb) {
       node.path = [...path, node.id];
       node.isLeaf = !hasChildren;
     }
-    if (cb) cb(node);
+    if (cb) {
+      const res = cb(node);
+      if (res === 'break') return;
+    }
     if (hasChildren) {
       depthFirstEach({ tree: node.children, path: node.path, init }, cb);
     }

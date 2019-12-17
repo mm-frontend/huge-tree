@@ -8,7 +8,7 @@
       <button @click="btnClick('tree-500')">500条</button>
       <button @click="btnClick('tree-10000')">1w 条</button>
       <button @click="btnClick('tree-20000')">2w 条</button>
-      <button @click="btnClick('tree-200000')">3w 条(含有大量 disabled)</button>
+      <button @click="btnClick('tree-30000-multi-disabled')">3w 条(含有大量 disabled)</button>
       <button @click="btnClick('tree-50000')">5w 条</button>
       <button @click="btnClick('tree-100000')">10w 条</button>
       <button @click="btnClick('tree-200000')">20w 条</button><br />

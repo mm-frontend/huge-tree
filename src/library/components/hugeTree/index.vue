@@ -35,6 +35,7 @@
               :showCheckboxLeafOnly="showCheckboxLeafOnly"
               :checkedAction="checkedAction"
               :showCheckbox="showCheckbox"
+              :node="item"
               :class="{ 'is-disabled': item.disabled }"
               @on-checked="onChecked(item, index)"
               @on-click-label="$emit('onClickLabel', item)"
@@ -326,6 +327,7 @@ export default {
       if (!node.children) return;
       const checked = node.checked;
       depthFirstEach({ tree: node.children }, i => {
+        if (i.isLeaf && i.disabled) return;
         i.indeterminate = false;
         i.checked = checked;
       });
