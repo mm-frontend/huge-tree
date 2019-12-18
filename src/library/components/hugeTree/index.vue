@@ -89,6 +89,7 @@ class BigData {
   disabledList = []; // disabled 为true组成的数组
   checkedKeys = []; // 选中的 ids
   checkedNodes = []; // 选中的 nodes
+  allCheckedList = []; // 所有选中的节点， 用于开启开关 isOnlyInCheckedSearch 时， 仅在选中节点里筛选。
 }
 
 export default {
@@ -106,7 +107,7 @@ export default {
     // 展开 level， all: 展开全部； 1: 只展示第一层(最外层)；2: 展示到第二层；、、、
     expandLevel: { type: [String, Number], default: 'all' },
     // 输入框 placeholder
-    placeholder: { type: String, default: '请输入关键字进行查找' },
+    placeholder: { type: String, default: '请输入关键字进行查找,支持逗号分隔多匹配' },
     // isLoading
     isLoading: { type: Boolean, default: false },
     // 在 label 上选中动作， 点击label选中 --> none: 不选中；click: 单击； dblclick: 双击；
@@ -119,6 +120,8 @@ export default {
     showCheckboxLeafOnly: { type: Boolean, default: false },
     // 默认勾选值
     defaultCheckedKeys: { type: Array, default: () => [] },
+    // 开关，仅在选中节点里筛选
+    isOnlyInCheckedSearch: { type: Boolean, default: false },
   },
   data() {
     this.big = null;
@@ -156,6 +159,15 @@ export default {
     expandKeys(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.setExpand(newVal);
+      }
+    },
+    isOnlyInCheckedSearch(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        if (newVal) {
+          this.big.allCheckedList = this.big.checkedNodes.slice();
+        } else {
+          this.big.allCheckedList = [];
+        }
       }
     },
   },
@@ -400,7 +412,7 @@ export default {
     // set this.big.filterList
     setFilterList(op) {
       if (op === 'showCheckedOnly') {
-        // 不直接 this.big.filterList = this.big.list, 因为之前的 filter 将 滤掉的 非叶子节点indeterminate = true 丢失了。
+        // 不直接 this.big.filterList = this.big.checkedNodes, 因为之前的 filter 将 滤掉的 非叶子节点indeterminate = true 丢失了。场景，1. 输入关键字，2. 点击showCheckedOnly
         this.big.filterList = this.big.list.filter(i => {
           const is = isCheckedOrIndeterminate(i, this.big.list);
           if (is) {
@@ -408,6 +420,16 @@ export default {
             i.indeterminate = false;
           }
           return is;
+        });
+        return;
+      }
+      if (this.isOnlyInCheckedSearch && this.big.allCheckedList.length > 0) {
+        if (this.keyword.trim() === '') {
+          this.big.filterList = this.big.allCheckedList;
+          return;
+        }
+        this.big.filterList = this.big.allCheckedList.filter(i => {
+          return isIncludesKeyword(i, this.keyword, this.big.allCheckedList);
         });
         return;
       }
@@ -446,11 +468,12 @@ export default {
     // 仅展示选中的项
     showCheckedOnly() {
       this.keyword = '';
-      this.setFilterList();
+      // this.setFilterList();
       this.init('showCheckedOnly');
     },
 
     restore() {
+      this.big.allCheckedList = [];
       this.init('restore');
     },
     // 手动更新选中状态
