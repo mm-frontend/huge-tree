@@ -2,14 +2,24 @@
   <div class="huge-tree">
     <section class="search-bar" v-if="hasInput">
       <slot name="pre-input"></slot>
-      <input
-        type="text"
-        class="filter-input"
-        :placeholder="placeholder"
-        v-model="keyword"
-        @keyup.13="init"
-        @input="debounceInput"
-      />
+      <div class="input">
+        <input
+          type="text"
+          class="filter-input"
+          :placeholder="placeholder"
+          v-model="keyword"
+          @keyup.13="init"
+          @input="debounceInput"
+        />
+        <i
+          class="clear-input"
+          v-if="keyword"
+          @click="
+            keyword = '';
+            init();
+          "
+        ></i>
+      </div>
       <button class="search-btn" @click="init">搜索</button>
     </section>
     <section v-if="renderList.length > 0" ref="content-wrap" class="content-wrap" @scroll="onScroll">
@@ -477,15 +487,43 @@ export default {
   .search-bar {
     padding: 0 10px 10px 10px;
     display: flex;
-    .filter-input {
-      box-sizing: border-box;
+    .input {
       flex: 1;
-      border: 1px solid #dcdfe6;
-      border-right: none;
-      padding: 8px 10px;
-      &:focus {
-        outline: none;
-        border-color: #409eff;
+      position: relative;
+      .filter-input {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #dcdfe6;
+        border-right: none;
+        padding: 8px 10px;
+        &:focus {
+          outline: none;
+          border-color: #409eff;
+        }
+      }
+      .clear-input {
+        position: absolute;
+        border-radius: 50%;
+        font-style: normal;
+        width: 12px;
+        top: 10px;
+        height: 12px;
+        right: 6px;
+        border: 1px solid #cccccc;
+        color: #ccc;
+        display: inline-block;
+        cursor: pointer;
+        &::after {
+          content: '\00D7';
+          position: absolute;
+          top: -6px;
+          left: 1px;
+          transform: scale(0.7);
+        }
+        &:hover {
+          border-color: #409eff;
+          color: #409eff;
+        }
       }
     }
     .search-btn {

@@ -6,7 +6,9 @@
  * @returns {Boolean}
  */
 export function isIncludesKeyword(node, keyword, list) {
-  const isInclude = node.label.includes(keyword);
+  const keywords = keyword.split(/[,，]/).filter(v => v);
+  // const isInclude = node.label.includes(keyword);
+  const isInclude = keywords.some(keyword => node.label.includes(keyword));
   if (isInclude) {
     // 自己匹配上了
     return true;
