@@ -13,20 +13,10 @@
       <button @click="btnClick('tree-100000')">10w 条</button>
       <button @click="btnClick('tree-200000')">20w 条</button><br />
       <button @click="onReload">刷新</button>
-      <button
-        @click="
-          invokeRef('showCheckedOnly');
-          isOnlyInCheckedSearch = true;
-        "
-      >
+      <button @click="invokeRef('showCheckedOnly')">
         showCheckedOnly
       </button>
-      <button
-        @click="
-          invokeRef('restore');
-          isOnlyInCheckedSearch = false;
-        "
-      >
+      <button @click="invokeRef('restore')">
         restore
       </button>
       <button @click="invokeRef('clear')">clear</button>
@@ -42,7 +32,6 @@
         :isLoading="isLoading"
         :showCheckbox="true"
         :defaultCheckedKeys="checkedKeys"
-        :isOnlyInCheckedSearch="isOnlyInCheckedSearch"
         @onChange="onChange"
         @onClickLabel="onClickLabel"
         @onClickCheckbox="onClickCheckbox"
@@ -71,7 +60,6 @@ export default {
   props: {},
   data() {
     return {
-      isOnlyInCheckedSearch: false,
       checkedKeys: ['1-3'],
       isLoading: true,
       isShowDialog: false,

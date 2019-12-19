@@ -120,8 +120,6 @@ export default {
     showCheckboxLeafOnly: { type: Boolean, default: false },
     // 默认勾选值
     defaultCheckedKeys: { type: Array, default: () => [] },
-    // 开关，仅在选中节点里筛选
-    isOnlyInCheckedSearch: { type: Boolean, default: false },
   },
   data() {
     this.big = null;
@@ -135,6 +133,7 @@ export default {
       endIndex: 70, // 渲染的结束区间
       throttleSrcoll: '', // 节流
       debounceInput: '',
+      isOnlyInCheckedSearch: false,
     };
   },
   computed: {
@@ -159,15 +158,6 @@ export default {
     expandKeys(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.setExpand(newVal);
-      }
-    },
-    isOnlyInCheckedSearch(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        if (newVal) {
-          this.big.allCheckedList = this.big.checkedNodes.slice();
-        } else {
-          this.big.allCheckedList = [];
-        }
       }
     },
   },
@@ -467,13 +457,20 @@ export default {
     },
 
     // 仅展示选中的项
-    showCheckedOnly() {
+    showCheckedOnly(isOnlyInCheckedSearch = true) {
       this.keyword = '';
-      // this.setFilterList();
       this.init('showCheckedOnly');
+      // 开关，仅在选中节点里筛选
+      this.isOnlyInCheckedSearch = isOnlyInCheckedSearch;
+      if (isOnlyInCheckedSearch) {
+        this.big.allCheckedList = this.big.checkedNodes.slice();
+      } else {
+        this.big.allCheckedList = [];
+      }
     },
 
     restore() {
+      this.isOnlyInCheckedSearch = false;
       this.big.allCheckedList = [];
       this.init('restore');
     },
