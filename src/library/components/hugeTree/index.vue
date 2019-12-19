@@ -236,6 +236,7 @@ export default {
 
     // 指定id展开
     setExpand(keys = []) {
+      if (keys.length <= 0) return;
       if (!this.big || this.big._data.length === 0) return;
       const nodes = keys.map(id => this.big.listMap[id]).filter(v => v);
       const ids = Array.from(new Set(nodes.map(node => node.path).flat(1)));
