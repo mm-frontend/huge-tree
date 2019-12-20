@@ -4,7 +4,14 @@
     <button @click="btnClick('list-100001')">10w 条</button>
     <button @click="btnClick('list-200001')">20w 条</button><br /><br />
 
-    <huge-list class="huge-list-wrap" :list="list" :height="600" :itemHeight="32" :isLoading="isLoading">
+    <huge-list
+      ref="huge-list"
+      class="huge-list-wrap"
+      :height="600"
+      :itemHeight="32"
+      :isLoading="isLoading"
+      @onClick="onClick"
+    >
       <span class="label" slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
       <i slot="loading">Loading</i>
     </huge-list>
@@ -22,22 +29,27 @@ export default {
   props: {},
   data() {
     return {
-      list: [],
       isLoading: false,
     };
   },
 
   computed: {},
 
-  mounted() {},
+  mounted() {
+    // this.btnClick('list-200001');
+  },
 
   methods: {
     btnClick(count) {
       this.isLoading = true;
       axios.get(`/static/json/${count}.json`).then(({ data }) => {
-        this.list = data;
+        this.$refs['huge-list'].setData(data);
         this.isLoading = false;
       });
+    },
+
+    onClick(item) {
+      console.log('click-item', item);
     },
   },
 };
