@@ -58,7 +58,7 @@ export default {
 <style lang="scss">
 .huge-list-demo {
   .huge-list-wrap {
-    height: 600px;
+    height: 400px;
     width: 500px;
     border: 1px solid #cccccc;
   }

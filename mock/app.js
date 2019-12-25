@@ -20,7 +20,7 @@ app.use(_static);
 componentsInstall(app, routes);
 global.DEF_ENV = DEF_ENV; // 自定义全局变量
 
-app.listen(4000);
+app.listen(3050);
 
 function componentsInstall(app, list) {
   list.forEach(i => {

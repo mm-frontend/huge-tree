@@ -38,19 +38,19 @@
 
 ## 方法
 
-| 方法名称        | 说明                                 | 参数                                                            |
-| --------------- | ------------------------------------ | --------------------------------------------------------------- |
-| setData         | 设置 tree                            | tree(Array 类型)                                                |
-| setCheckedKeys  | 回显选中状态                         | id 组成的数组                                                   |
-| setCheckedNodes | 回显选中状态                         | node 节点组成的数组                                             |
-| getCheckedKeys  | 返回 id 组成的数组                   | --                                                              |
-| getCheckedNodes | 返回 node 节点组成的数组             | --                                                              |
-| clearChecked    | 清空所有选中                         | --                                                              |
-| setExpand       | 指定 id 展开                         | id 组成的数组                                                   |
-| showCheckedOnly | 只展示选中的项，此方法会置空过滤条件 | isOnlyInCheckedSearch, 是否只在选中的节点里进行筛选, 默认 false |
-| restore         | 对 showCheckedOnly 之后进行恢复      | --                                                              |
-| update          | 手动更新选中状态                     | --                                                              |
-| clear           | 清空内存占用                         | --                                                              |
+| 方法名称        | 说明                                 | 参数                                                           |
+| --------------- | ------------------------------------ | -------------------------------------------------------------- |
+| setData         | 设置 tree                            | tree(Array 类型)                                               |
+| setCheckedKeys  | 回显选中状态                         | id 组成的数组                                                  |
+| setCheckedNodes | 回显选中状态                         | node 节点组成的数组                                            |
+| getCheckedKeys  | 返回 id 组成的数组                   | --                                                             |
+| getCheckedNodes | 返回 node 节点组成的数组             | --                                                             |
+| clearChecked    | 清空所有选中                         | --                                                             |
+| setExpand       | 指定 id 展开                         | id 组成的数组                                                  |
+| showCheckedOnly | 只展示选中的项，此方法会置空过滤条件 | isOnlyInCheckedSearch, 是否只在选中的节点里进行筛选, 默认 true |
+| restore         | 对 showCheckedOnly 之后进行恢复      | --                                                             |
+| update          | 手动更新选中状态                     | --                                                             |
+| clear           | 清空内存占用                         | --                                                             |
 
 ## Events
 

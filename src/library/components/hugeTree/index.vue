@@ -22,7 +22,7 @@
       </div>
       <button class="search-btn" @click="init">搜索</button>
     </section>
-    <section v-if="renderList.length > 0" ref="content-wrap" class="content-wrap" @scroll="onScroll">
+    <section ref="content-wrap" class="content-wrap" @scroll="onScroll">
       <div class="tree-phantom" :style="`height: ${phantomHeight}px`"></div>
       <div class="tree-content" :style="`transform: translateY(${startIndex * itemHeigth}px)`">
         <template v-for="(item, index) in renderList">
@@ -59,7 +59,7 @@
         </template>
       </div>
     </section>
-    <section v-else class="no-data">
+    <section v-if="renderList.length <= 0" class="no-data">
       <p v-if="isLoading || isSearching"><slot name="loading">loading...</slot></p>
       <p v-else>{{ emptyText }}</p>
     </section>
@@ -435,12 +435,10 @@ export default {
 
     // 回到顶部
     backToTop() {
-      if (this.big.renderList && this.big.renderList.length > 0) {
-        this.$nextTick(() => {
-          this.$refs['content-wrap'].scrollTop = 0;
-          this.setRenderRange();
-        });
-      }
+      this.$nextTick(() => {
+        this.$refs['content-wrap'].scrollTop = 0;
+        this.setRenderRange();
+      });
     },
 
     // 清空所有选中
@@ -481,7 +479,12 @@ export default {
 
     // 清空内存占用
     clear() {
-      this.count = 0;
+      this.count = 1;
+      this.keyword = ''; // 关键词
+      this.isSearching = false; // 搜索中
+      this.startIndex = 0; // 渲染的开始区间
+      this.endIndex = 70; // 渲染的结束区间
+      this.isOnlyInCheckedSearch = false;
       clearAll(this.big.list);
       if (this.big) {
         this.big._data = []; // 海量数据 tree

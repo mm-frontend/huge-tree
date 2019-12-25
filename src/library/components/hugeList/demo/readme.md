@@ -2,7 +2,6 @@
 
 | 参数       | 说明               | 类型           | 可选值 | 默认值     |
 | ---------- | ------------------ | -------------- | ------ | ---------- |
-| height     | 容器高度           | String, Number | --     | 600        |
 | itemHeight | 每一项的高度       | String, Number | --     | 32         |
 | isLoading  | 是否展示加载中     | Boolean        | --     | false      |
 | emptyText  | 内容为空展示的文本 | String         | --     | '暂无数据' |
