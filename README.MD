@@ -1,7 +1,9 @@
 ## 使用方式
-// 因为直接使用的源码，模块需要经过 webpack 编译
+// 因为直接使用的源码，模块需要经过 webpack 编译， 需要引入使用less
 
 npm i @bitmain/components-tree --save
+或
+yarn add @bitmain/components-tree -D
 
 ```
 // main.js， 全局使用

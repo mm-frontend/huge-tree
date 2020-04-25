@@ -37,8 +37,8 @@
         @onClickCheckbox="onClickCheckbox"
       >
         <select slot="pre-input" class="pre-select">
-          <option value="1">1111</option>
-          <option value="2">2222</option>
+          <option value="1">slot</option>
+          <option value="2">hhh</option>
         </select>
         <span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
         <i slot="loading">加载中...</i>

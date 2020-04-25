@@ -84,7 +84,7 @@ class BigData {
   _data = []; // 海量数据 tree
   list = []; // 扁平化的tree
   filterList = []; // 根据关键词过滤后的list
-  listMap = {}; // this.big.filterList 对应的 map
+  listMap = {}; // this.big.list 对应的 map
   filterTree = []; // 根据关键词过滤后的tree
   disabledList = []; // disabled 为true组成的数组
   checkedKeys = []; // 选中的 ids
@@ -125,7 +125,6 @@ export default {
     this.big = null;
     return {
       count: 1, // 用于视图更新
-      getLeafCount, // 获取子孙元素list
       keyword: '', // 关键词
       isSearching: false, // 搜索中
       itemHeigth: 27, // 每一项的高度

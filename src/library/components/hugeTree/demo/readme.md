@@ -12,7 +12,7 @@
     {
       id: 1,
       label: '全部',
-      parentId: null, // 根节点的 parentId 必须为 null
+      parentId: 0, // 根节点的 parentId 必须为 null
       disabled: false, // 可选
       children: null
     }
