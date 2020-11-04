@@ -45,6 +45,7 @@
               :showCheckboxLeafOnly="showCheckboxLeafOnly"
               :checkedAction="checkedAction"
               :showCheckbox="showCheckbox"
+              :checkStriclty="checkStriclty"
               :node="item"
               :class="{ 'is-disabled': item.disabled }"
               @on-checked="onChecked(item, index)"
@@ -120,6 +121,8 @@ export default {
     showCheckboxLeafOnly: { type: Boolean, default: false },
     // 默认勾选值
     defaultCheckedKeys: { type: Array, default: () => [] },
+    // 父子不互相关联
+    checkStriclty: { type: Boolean, default: true },
   },
   data() {
     this.big = null;
@@ -309,6 +312,11 @@ export default {
     },
     // 处理选中逻辑
     handleCheckedChange(node) {
+      // 父子不互相关联
+      if (this.checkStriclty) {
+        node.indeterminate = node.isLeaf ? false : node.checked;
+        return;
+      }
       if (node.checked) node.indeterminate = false;
       this.doChildrenChecked(node);
       this.doParentChecked(node.parentId);

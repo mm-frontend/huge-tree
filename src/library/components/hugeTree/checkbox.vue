@@ -28,6 +28,7 @@ export default {
     isLeaf: { type: Boolean, default: true },
     showCheckboxLeafOnly: { type: Boolean, default: false },
     node: { type: Object, default: () => {} },
+    checkStriclty: { type: Boolean, default: false },
   },
   data() {
     return {};
@@ -66,7 +67,7 @@ export default {
     },
 
     getNewChecked(oldChecked) {
-      if (this.node.isLeaf) {
+      if (this.node.isLeaf || this.checkStriclty) {
         return !oldChecked;
       }
       let newChecked = false;

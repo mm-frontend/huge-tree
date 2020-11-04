@@ -35,6 +35,7 @@
 | showCheckbox         | 是否展示 checkbox                                                                            | Boolean        | --                                                      | false                |
 | showCheckboxLeafOnly | 是否仅叶子节点展示 checkbox, 配合 showCheckbox = true 才有效。                               | Boolean        | --                                                      | false                |
 | defaultCheckedKeys   | 默认选中, setData 之后赋值。                                                                 | Array          | --                                                      | []                   |
+| checkStriclty        | 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法                                     | Boolean        | --                                                      | false                |
 
 ## 方法
 
