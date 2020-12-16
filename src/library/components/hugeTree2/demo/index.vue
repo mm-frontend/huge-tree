@@ -15,7 +15,7 @@
     </div>
 
     <div class="tree-wrap" v-show="isShowDialog">
-      <huge-tree
+      <btm-huge-tree
         ref="huge-tree"
         hasInput
         checkedAction="dblclick"
@@ -34,19 +34,15 @@
         </select>
         <span slot-scope="{ slotScope }"><i>&#9733;</i> {{ slotScope.label }}</span>
         <i slot="loading">加载中...</i>
-      </huge-tree>
+      </btm-huge-tree>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import HugeTree from '../../hugeTree/index';
 
 export default {
-  components: {
-    HugeTree,
-  },
   props: {},
   data() {
     return {

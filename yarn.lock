@@ -3739,6 +3739,14 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
+huge-tree@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/huge-tree/-/huge-tree-2.0.0.tgz#a479cfdf378458fdc09d66698a6bd89bdc10d8b2"
+  dependencies:
+    axios "^0.19.0"
+    vue "^2.6.10"
+    vue-router "^3.0.6"
+
 husky@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/husky/-/husky-2.3.0.tgz#8b78ed24d763042df7fd899991985d65a976dd13"

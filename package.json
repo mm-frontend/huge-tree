@@ -1,12 +1,23 @@
 {
-  "name": "@bitmain/components-tree",
-  "version": "1.1.14",
-  "description": "海量数据tree、list<br>",
-  "keywords": ["huge-tree", "huge-tree-vue", "tree", "large-tree", "vue", "huge-list-vue", "huge-list", "list", "large-list"],
-  "main": "src/library/components/index.js",
+  "name": "huge-tree",
+  "version": "2.0.1",
+  "description": "vue组件，海量数据 tree、list,支持20w+，虚拟滚动<br>",
+  "keywords": [
+    "huge-tree",
+    "huge-tree-vue",
+    "tree",
+    "large-tree",
+    "vue",
+    "huge-list-vue",
+    "huge-list",
+    "list",
+    "large-list"
+  ],
+  "main": "dist/huge-tree.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress",
     "build": "cross-env NODE_ENV=production webpack",
+    "build-library": "cross-env NODE_ENV=production webpack --config webpack.config.library.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "format": "prettier --write '{src,config,mock}/**/*.{js,json,vue,less}'",

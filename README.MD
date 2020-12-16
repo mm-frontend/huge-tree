@@ -1,13 +1,13 @@
 ## 使用方式
-// 因为直接使用的源码，模块需要经过 webpack 编译， 需要引入使用less
 
-npm i @bitmain/components-tree --save
+npm i huge-tree --save
 或
-yarn add @bitmain/components-tree -D
+yarn add huge-tree -D
 
+### 全局使用
 ```
-// main.js， 全局使用
-import BTM from '@bitmain/components-tree'
+// main.js， 
+import BTM from 'huge-tree'
 Vue.use(BTM)
 
 // demo1.vue, 使用 huge-tree
@@ -17,15 +17,17 @@ Vue.use(BTM)
 <btm-huge-list></btm-huge-list>
 ```
 
+### 按需使用
 ```
-// 按需使用
-import { HugeTree, HugeList } from '@bitmain/components-tree'
+// 
+import { HugeTree, HugeList } from 'huge-tree'
 Vue.use(HugeTree)
 Vue.use(HugeList)
 ```
 
+### 组件内部使用
 ```
-// demo.vue, 组件内部使用
+// demo.vue, 
 <template>
   <div>
     <btm-huge-tree></btm-huge-tree>
@@ -33,7 +35,7 @@ Vue.use(HugeList)
 </template>
 
 <script>
-import { HugeTree } from '@bitmain/components-tree'
+import { HugeTree } from 'huge-tree'
 
 export default {
   components: {

@@ -41,7 +41,7 @@
 
 <script>
 import axios from 'axios';
-import HugeTree from '../../hugeTree/index';
+import { HugeTree } from 'huge-tree';
 export default {
   components: {
     HugeTree,
