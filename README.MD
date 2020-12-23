@@ -55,8 +55,9 @@ export default {
 ## 本地运行
 1. git clone
 2. yarn install
-3. yarn dev && yarn mock:api
-4. 0.0.0.0:8000
+3. yarn dev
+4. yarn mock:api // 再开一个窗口执行此命令，两个node服务都跑起来。
+5. 0.0.0.0:8000
 
 
 ## 打包为umd类型的js-hugeTree.js
