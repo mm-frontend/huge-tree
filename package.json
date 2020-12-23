@@ -57,6 +57,7 @@
     "glob": "^7.1.4",
     "happypack": "^5.0.1",
     "html-webpack-plugin": "^3.2.0",
+    "huge-tree": "^2.0.1",
     "husky": "^2.3.0",
     "koa": "^2.8.1",
     "koa-body": "^4.1.1",

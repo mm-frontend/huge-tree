@@ -57,3 +57,30 @@ export default {
 2. yarn install
 3. yarn dev && yarn mock:api
 4. 0.0.0.0:8000
+
+
+## 打包为umd类型的js-hugeTree.js
+```
+运行 yarn build-library 将生成dist/huge-tree.js
+
+// 使用
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>huge-tree</title>
+  <script src="**/**/huge-tree.js"></script>
+</head>
+
+<body>
+  <script>
+    console.log(hugeTree)
+  </script>
+</body>
+
+</html>
+
+
+```
