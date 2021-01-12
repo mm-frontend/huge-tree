@@ -122,7 +122,7 @@ export default {
     // 默认勾选值
     defaultCheckedKeys: { type: Array, default: () => [] },
     // 父子不互相关联
-    checkStriclty: { type: Boolean, default: true },
+    checkStriclty: { type: Boolean, default: false },
   },
   data() {
     this.big = null;
