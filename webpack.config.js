@@ -29,7 +29,7 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
     filename: chunkhash,
     chunkFilename: chunkhash,
-    publicPath: isDev ? '/' : './',
+    publicPath: isDev ? '/' : '/',
   },
   module: {
     rules: [

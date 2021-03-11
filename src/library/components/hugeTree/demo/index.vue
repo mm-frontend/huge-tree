@@ -1,7 +1,7 @@
 <template>
   <div class="huge-demo">
-    <router-link :to="'/demo/hugeTree1'">hugeTree1</router-link>
-    <button @click="nav">hugeTree1</button>
+    <!-- <router-link :to="'/demo/hugeTree1'">hugeTree1</router-link>
+    <button @click="nav">hugeTree1</button> -->
     <div class="btn-bar">
       huge-tree<br />
       点击按钮，展示tree<br />
@@ -85,7 +85,7 @@ export default {
   computed: {},
 
   mounted() {
-    this.btnClick('tree-30000-multi-disabled');
+    this.btnClick('tree-500');
   },
 
   beforeDestroy() {},
