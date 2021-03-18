@@ -90,7 +90,7 @@
     "webpack-parallel-uglify-plugin": "^1.1.0"
   },
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6"
   },
